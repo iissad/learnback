@@ -37,6 +37,7 @@ flutter:
       fonts:
         - asset: assets/fonts/SpaceGrotesk-VariableFont_wght.ttf
   assets:
+    - .env
     - assets/icons/
 
 flutter_launcher_icons:
