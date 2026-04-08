@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -22,7 +24,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
 
 // ── Auth state ────────────────────────────────────────────────────────────────
 
-enum AuthStatus { initial, loading, authenticated, error }
+enum AuthStatus { initial, loading, authenticated, registered, error }
 
 class AuthState {
   const AuthState({
@@ -72,15 +74,19 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> login({required String email, required String password}) async {
+    log('Attempting login for email: $email');
     state = const AuthState(status: AuthStatus.loading);
     try {
       final result = await _repo.login(email: email, password: password);
+      log('Login successful. UserId: ${result.userId}');
       await _storage.write(key: _tokenKey, value: result.token);
       state = AuthState(status: AuthStatus.authenticated, token: result.token);
     } on DioException catch (e) {
       final msg = _extractError(e);
+      log('Login failed with DioException: $msg', error: e);
       state = AuthState(status: AuthStatus.error, errorMessage: msg);
-    } catch (_) {
+    } catch (e, stack) {
+      log('Login failed with unknown error', error: e, stackTrace: stack);
       state = const AuthState(
         status: AuthStatus.error,
         errorMessage: 'Something went wrong. Please try again.',
@@ -93,6 +99,7 @@ class AuthNotifier extends Notifier<AuthState> {
     required String email,
     required String password,
   }) async {
+    log('Attempting registration for email: $email');
     state = const AuthState(status: AuthStatus.loading);
     try {
       final result = await _repo.register(
@@ -100,12 +107,20 @@ class AuthNotifier extends Notifier<AuthState> {
         email: email,
         password: password,
       );
-      await _storage.write(key: _tokenKey, value: result.token);
-      state = AuthState(status: AuthStatus.authenticated, token: result.token);
+      log('Registration successful. UserId: ${result.userId}');
+      // We return registered state so the UI knows to push to /confirm-email
+      // but we do NOT authenticate them since they must verify email and login again.
+      state = const AuthState(status: AuthStatus.registered);
     } on DioException catch (e) {
       final msg = _extractError(e);
+      log('Registration failed with DioException: $msg', error: e);
       state = AuthState(status: AuthStatus.error, errorMessage: msg);
-    } catch (_) {
+    } catch (e, stack) {
+      log(
+        'Registration failed with unknown error',
+        error: e,
+        stackTrace: stack,
+      );
       state = const AuthState(
         status: AuthStatus.error,
         errorMessage: 'Something went wrong. Please try again.',

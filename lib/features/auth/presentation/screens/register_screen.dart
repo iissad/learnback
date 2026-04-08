@@ -57,7 +57,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final authState = ref.watch(authProvider);
 
     ref.listen<AuthState>(authProvider, (_, next) {
-      if (next.status == AuthStatus.error && next.errorMessage != null) {
+      if (next.status == AuthStatus.registered) {
+        context.pushReplacement('/confirm-email');
+      } else if (next.status == AuthStatus.error && next.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),

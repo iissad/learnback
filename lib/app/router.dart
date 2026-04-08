@@ -4,6 +4,7 @@ import 'package:learnback/features/splash/presentation/screens/splash_screen.dar
 import 'package:learnback/features/auth/presentation/screens/welcome_screen.dart';
 import 'package:learnback/features/auth/presentation/screens/login_screen.dart';
 import 'package:learnback/features/auth/presentation/screens/register_screen.dart';
+import 'package:learnback/features/auth/presentation/screens/confirm_email_screen.dart';
 
 // Provides the GoRouter instance
 final goRouter = GoRouter(
@@ -18,6 +19,10 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
+    ),
+    GoRoute(
+      path: '/confirm-email',
+      builder: (context, state) => const ConfirmEmailScreen(),
     ),
   ],
 );
