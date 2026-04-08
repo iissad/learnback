@@ -23,7 +23,7 @@ abstract class AppColors {
   static const Color purple = Color(0xFF7367F0); // gradient end
   static const Color blue = Color(0xFF4988C4);
   static const Color blueLight = Color(0xFF13A4EC);
-  static const Color darkBorder = Color(0xFF729EC9);
+  static const Color darkBorder = Color(0xFF4988C4);
 
   // ── Semantic ───────────────────────────────────────────────────────
   static const Color error = Color(0xFFFF4D6A);

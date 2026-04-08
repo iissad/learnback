@@ -49,29 +49,36 @@ class _AuthInputFieldState extends State<AuthInputField> {
           textInputAction: widget.textInputAction,
           onFieldSubmitted: widget.onFieldSubmitted,
           validator: widget.validator,
-          style: AppTextStyles.bodyLarge.copyWith(color: Colors.white),
+          style: AppTextStyles.headingSmall.copyWith(color: Colors.white),
           decoration: InputDecoration(
             hintText: widget.hint,
-            hintStyle: AppTextStyles.bodyLarge.copyWith(
+            hintStyle: AppTextStyles.headingSmall.copyWith(
               color: AppColors.darkTextSecondary,
             ),
-            filled: true,
-            fillColor: AppColors.darkBgSecondary,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 16,
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.darkBorder),
+              borderSide: const BorderSide(
+                color: AppColors.darkBorder,
+                width: 1.5,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.darkBorder),
+              borderSide: const BorderSide(
+                color: AppColors.darkBorder,
+                width: 1.5,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.cyan, width: 1.5),
+              borderSide: const BorderSide(
+                color: AppColors.darkBorder,
+                width: 3,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
