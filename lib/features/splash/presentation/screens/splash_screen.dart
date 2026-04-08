@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -22,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
     if (!mounted) return;
 
     // TODO: Navigate to Auth or Home depending on auth state.
-    // context.go('/auth'); // Using GoRouter
+    context.go('/welcome');
   }
 
   @override
