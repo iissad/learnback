@@ -45,19 +45,20 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     final responseBody = response.data!;
-    final dynamic data = responseBody['data'];
 
-    if (data is Map<String, dynamic>) {
-      return AuthResult(
-        token: data['token'] as String? ?? '',
-        userId: (data['_id'] ?? data['userId'] ?? '') as String,
-        name: data['name'] as String? ?? '',
-        email: data['email'] as String? ?? '',
-        role: data['role'] as String? ?? '',
-      );
+    if (responseBody['success'] == true) {
+      // The current UI (RegisterScreen) listens for AuthStatus.registered
+      // and redirects to /confirm-email. Returning this result triggers that flow.
+      return const AuthResult(token: '', userId: '');
     }
 
-    // Handles cases where 'data' is a success message string (like for registration)
-    return const AuthResult(token: '', userId: '');
+    throw DioException(
+      requestOptions: response.requestOptions,
+      response: response,
+      message:
+          responseBody['message'] ??
+          responseBody['error'] ??
+          'Registration failed',
+    );
   }
 }

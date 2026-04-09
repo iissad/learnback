@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,14 +11,38 @@ import 'package:learnback/features/auth/presentation/screens/confirm_email_scree
 import 'package:learnback/features/auth/presentation/providers/auth_provider.dart';
 import 'package:learnback/features/home/presentation/screens/main_screen.dart';
 
+/// A simple [Listenable] that notifies listeners whenever an [AsyncValue] or
+/// any other stream changes. Used to trigger GoRouter redirections.
+class GoRouterRefreshStream extends ChangeNotifier {
+  GoRouterRefreshStream(Stream<dynamic> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
+  }
+
+  late final StreamSubscription<dynamic> _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
+
 // Provides the GoRouter instance
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  // We use listenable to trigger redirects without rebuilding the whole router
+  final refreshListenable = GoRouterRefreshStream(
+    ref.watch(authProvider.notifier).stream,
+  );
 
   return GoRouter(
     initialLocation: '/',
+    refreshListenable: refreshListenable,
     redirect: (context, state) {
-      final isAuth =
+      // Use ref.read to get the latest state without subscribing to rebuilds here
+      final authState = ref.read(authProvider);
+
+      final isAuthForm =
           state.matchedLocation == '/login' ||
           state.matchedLocation == '/register' ||
           state.matchedLocation == '/welcome';
@@ -26,12 +52,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       if (authState.status == AuthStatus.authenticated) {
         // If authenticated, don't allow access to auth pages or splash
-        if (isAuth || isSplash) {
+        if (isAuthForm || isSplash) {
           return '/home';
         }
       } else {
-        // If not authenticated, don't allow access to protected pages
-        if (!isAuth && !isSplash && !isConfirmEmail) {
+        // If not authenticated, only allow public pages
+        if (!isAuthForm && !isSplash && !isConfirmEmail) {
           return '/welcome';
         }
       }

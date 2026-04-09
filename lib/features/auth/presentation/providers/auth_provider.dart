@@ -111,12 +111,8 @@ class AuthNotifier extends Notifier<AuthState> {
     log('Attempting registration for email: $email');
     state = const AuthState(status: AuthStatus.loading);
     try {
-      final result = await _repo.register(
-        name: name,
-        email: email,
-        password: password,
-      );
-      log('Registration successful. UserId: ${result.userId}');
+      await _repo.register(name: name, email: email, password: password);
+      log('Registration successful.');
       // We return registered state so the UI knows to push to /confirm-email
       // but we do NOT authenticate them since they must verify email and login again.
       state = const AuthState(status: AuthStatus.registered);
