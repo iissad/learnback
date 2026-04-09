@@ -16,11 +16,21 @@ class AuthRepositoryImpl implements AuthRepository {
       '/auth/login',
       data: {'email': email, 'password': password},
     );
-    final data = response.data!;
-    return AuthResult(
-      token: data['token'] as String,
-      userId: data['userId'] as String? ?? '',
-    );
+
+    final responseBody = response.data!;
+    final dynamic data = responseBody['data'];
+
+    if (data is Map<String, dynamic>) {
+      return AuthResult(
+        token: data['token'] as String? ?? '',
+        userId: (data['_id'] ?? data['userId'] ?? '') as String,
+        name: data['name'] as String? ?? '',
+        email: data['email'] as String? ?? '',
+        role: data['role'] as String? ?? '',
+      );
+    }
+
+    return const AuthResult(token: '', userId: '');
   }
 
   @override
@@ -33,10 +43,21 @@ class AuthRepositoryImpl implements AuthRepository {
       '/auth/register',
       data: {'name': name, 'email': email, 'password': password},
     );
-    final data = response.data!;
-    return AuthResult(
-      token: data['token'] as String,
-      userId: data['userId'] as String? ?? '',
-    );
+
+    final responseBody = response.data!;
+    final dynamic data = responseBody['data'];
+
+    if (data is Map<String, dynamic>) {
+      return AuthResult(
+        token: data['token'] as String? ?? '',
+        userId: (data['_id'] ?? data['userId'] ?? '') as String,
+        name: data['name'] as String? ?? '',
+        email: data['email'] as String? ?? '',
+        role: data['role'] as String? ?? '',
+      );
+    }
+
+    // Handles cases where 'data' is a success message string (like for registration)
+    return const AuthResult(token: '', userId: '');
   }
 }

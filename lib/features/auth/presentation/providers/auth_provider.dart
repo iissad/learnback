@@ -79,7 +79,16 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       final result = await _repo.login(email: email, password: password);
       log('Login successful. UserId: ${result.userId}');
-      await _storage.write(key: _tokenKey, value: result.token);
+
+      // Save all auth data to secure storage
+      await Future.wait([
+        _storage.write(key: _tokenKey, value: result.token),
+        _storage.write(key: 'user_id', value: result.userId),
+        _storage.write(key: 'user_name', value: result.name),
+        _storage.write(key: 'user_email', value: result.email),
+        _storage.write(key: 'user_role', value: result.role),
+      ]);
+
       state = AuthState(status: AuthStatus.authenticated, token: result.token);
     } on DioException catch (e) {
       final msg = _extractError(e);
@@ -129,7 +138,13 @@ class AuthNotifier extends Notifier<AuthState> {
   }
 
   Future<void> logout() async {
-    await _storage.delete(key: _tokenKey);
+    await Future.wait([
+      _storage.delete(key: _tokenKey),
+      _storage.delete(key: 'user_id'),
+      _storage.delete(key: 'user_name'),
+      _storage.delete(key: 'user_email'),
+      _storage.delete(key: 'user_role'),
+    ]);
     state = const AuthState();
   }
 
