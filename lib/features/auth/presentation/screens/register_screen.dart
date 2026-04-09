@@ -33,6 +33,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
+    // Dismiss keyboard to prevent layout overflow during transition
+    FocusScope.of(context).unfocus();
+
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text;

@@ -27,6 +27,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
+    // Dismiss keyboard to prevent layout overflow during transition
+    FocusScope.of(context).unfocus();
+
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
