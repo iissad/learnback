@@ -53,9 +53,9 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(
-                      Icons.search,
+                      Icons.search_rounded,
                       color: AppColors.darkTextSecondary.withValues(alpha: 0.6),
-                      size: 22,
+                      size: 25,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -81,12 +81,10 @@ class HomeScreen extends StatelessWidget {
                     // Custom Filter Icon
                     Container(
                       padding: const EdgeInsets.all(4),
-                      child: SvgPicture.string(
-                        '''<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10 18V16H14V18H10ZM3 13V11H21V13H3ZM6 8V6H18V8H6Z" fill="#13A4EC"/>
-</svg>''',
-                        width: 24,
-                        height: 24,
+                      child: Icon(
+                        Icons.filter_list_rounded,
+                        color: AppColors.blueLight.withValues(alpha: 0.6),
+                        size: 25,
                       ),
                     ),
                   ],

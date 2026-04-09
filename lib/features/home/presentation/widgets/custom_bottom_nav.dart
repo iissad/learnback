@@ -16,16 +16,7 @@ class CustomBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 12, bottom: 24, left: 24, right: 24),
-      decoration: BoxDecoration(
-        color: AppColors.darkBgPrimary,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
+      decoration: BoxDecoration(color: AppColors.darkBgPrimary),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -52,17 +43,14 @@ class CustomBottomNav extends StatelessWidget {
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
-              ? Border.all(
-                  color: AppColors.blueLight.withValues(alpha: 0.5),
-                  width: 1.5,
-                )
+              ? Border.all(color: AppColors.blue, width: 1.5)
               : null,
         ),
         child: SvgPicture.asset(
           iconPath,
           colorFilter: ColorFilter.mode(
             isSelected
-                ? AppColors.blueLight
+                ? AppColors.blue
                 : AppColors.darkTextSecondary.withValues(alpha: 0.6),
             BlendMode.srcIn,
           ),
