@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,35 +10,26 @@ import 'package:learnback/features/auth/presentation/screens/confirm_email_scree
 import 'package:learnback/features/auth/presentation/providers/auth_provider.dart';
 import 'package:learnback/features/home/presentation/screens/main_screen.dart';
 
-/// A simple [Listenable] that notifies listeners whenever an [AsyncValue] or
-/// any other stream changes. Used to trigger GoRouter redirections.
-class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream(Stream<dynamic> stream) {
-    notifyListeners();
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
-  }
-
-  late final StreamSubscription<dynamic> _subscription;
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
+/// A simple [Listenable] used to notify GoRouter when the auth state changes
+/// without needing to rebuild the entire GoRouter instance.
+class RouterRefreshListenable extends ChangeNotifier {
+  void refresh() => notifyListeners();
 }
 
 // Provides the GoRouter instance
 final routerProvider = Provider<GoRouter>((ref) {
-  // We use listenable to trigger redirects without rebuilding the whole router
-  final refreshListenable = GoRouterRefreshStream(
-    ref.watch(authProvider.notifier).stream,
-  );
+  final listenable = RouterRefreshListenable();
+
+  // We listen to changes without "watching" the state in the body.
+  // This ensures the GoRouter instance is created only once,
+  // preventing the "reset back to splash" bug.
+  ref.listen(authProvider, (_, _) => listenable.refresh());
 
   return GoRouter(
     initialLocation: '/',
-    refreshListenable: refreshListenable,
+    refreshListenable: listenable,
     redirect: (context, state) {
-      // Use ref.read to get the latest state without subscribing to rebuilds here
+      // Securely read the latest state
       final authState = ref.read(authProvider);
 
       final isAuthForm =
