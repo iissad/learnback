@@ -17,12 +17,16 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNextScreen() async {
-    // Delay for 2 seconds to show the splash screen
+    // Show splash for at least 2 seconds
     await Future.delayed(const Duration(seconds: 2));
 
     if (!mounted) return;
 
-    // TODO: Navigate to Auth or Home depending on auth state.
+    // We don't need to manually navigate here if GoRouter is listening to AuthState,
+    // but we can trigger a refresh or just go to /login if still unknown.
+    // However, the redirect logic in routerProvider will now handle this.
+    // To be safe, we can just trigger a go('/') to re-evaluate redirect if needed,
+    // but context.go('/welcome') is fine as a fallback.
     context.go('/welcome');
   }
 

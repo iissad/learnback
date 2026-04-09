@@ -43,7 +43,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                     color: AppColors.darkBgSecondary,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.blueLight.withOpacity(0.2),
+                        color: AppColors.blueLight.withValues(alpha: 0.2),
                         blurRadius: 40,
                         spreadRadius: 10,
                       ),
@@ -127,9 +127,11 @@ class ConfirmEmailScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 decoration: BoxDecoration(
-                  color: AppColors.blue.withOpacity(0.1),
+                  color: AppColors.blue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.blue.withOpacity(0.3)),
+                  border: Border.all(
+                    color: AppColors.blue.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Row(
                   children: [
