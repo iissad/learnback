@@ -43,10 +43,10 @@ class HomeScreen extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF1B263B).withOpacity(0.5),
+                  color: const Color(0xFF1B263B).withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     width: 1,
                   ),
                 ),
@@ -54,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.search,
-                      color: AppColors.darkTextSecondary.withOpacity(0.6),
+                      color: AppColors.darkTextSecondary.withValues(alpha: 0.6),
                       size: 22,
                     ),
                     const SizedBox(width: 12),
@@ -66,7 +66,9 @@ class HomeScreen extends StatelessWidget {
                         decoration: InputDecoration(
                           hintText: 'Search learning tracks...',
                           hintStyle: AppTextStyles.bodyMedium.copyWith(
-                            color: AppColors.darkTextSecondary.withOpacity(0.6),
+                            color: AppColors.darkTextSecondary.withValues(
+                              alpha: 0.6,
+                            ),
                             fontSize: 16,
                           ),
                           border: InputBorder.none,

@@ -20,7 +20,7 @@ class CustomBottomNav extends StatelessWidget {
         color: AppColors.darkBgPrimary,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.black.withValues(alpha: 0.3),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -48,12 +48,12 @@ class CustomBottomNav extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           color: isSelected
-              ? const Color(0xFF003D66).withOpacity(0.4)
+              ? const Color(0xFF003D66).withValues(alpha: 0.4)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: isSelected
               ? Border.all(
-                  color: AppColors.blueLight.withOpacity(0.5),
+                  color: AppColors.blueLight.withValues(alpha: 0.5),
                   width: 1.5,
                 )
               : null,
@@ -63,7 +63,7 @@ class CustomBottomNav extends StatelessWidget {
           colorFilter: ColorFilter.mode(
             isSelected
                 ? AppColors.blueLight
-                : AppColors.darkTextSecondary.withOpacity(0.6),
+                : AppColors.darkTextSecondary.withValues(alpha: 0.6),
             BlendMode.srcIn,
           ),
           width: 28,
