@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:learnback/core/constants/api_constants.dart';
 
 class DioClient {
   final Dio _dio;
@@ -12,8 +11,7 @@ class DioClient {
           dioOverride ??
           Dio(
             BaseOptions(
-              baseUrl:
-                  dotenv.env['API_BASE_URL'] ?? ApiConstants.defaultBaseUrl,
+              baseUrl: dotenv.env['API_BASE_URL']!,
               connectTimeout: const Duration(seconds: 10),
               receiveTimeout: const Duration(seconds: 10),
               headers: {'Content-Type': 'application/json'},
