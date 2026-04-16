@@ -144,6 +144,35 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthState();
   }
 
+  Future<void> handleDeepLinkToken(String token) async {
+    log('Handling deep link token');
+    state = const AuthState(status: AuthStatus.loading);
+    try {
+      // 1. Save the token first so repository can use it via interceptor
+      await _storage.write(key: _tokenKey, value: token);
+
+      // 2. Fetch profile info
+      final result = await _repo.getProfile();
+
+      // 3. Save user details
+      await Future.wait([
+        _storage.write(key: 'user_id', value: result.userId),
+        _storage.write(key: 'user_name', value: result.name),
+        _storage.write(key: 'user_email', value: result.email),
+        _storage.write(key: 'user_role', value: result.role),
+      ]);
+
+      state = AuthState(status: AuthStatus.authenticated, token: token);
+      log('Deep link authentication successful.');
+    } catch (e, stack) {
+      log('Deep link authentication failed', error: e, stackTrace: stack);
+      state = AuthState(
+        status: AuthStatus.error,
+        errorMessage: 'Failed to verify email link. Please try logging in.',
+      );
+    }
+  }
+
   String _extractError(DioException e) {
     final data = e.response?.data;
     if (data is Map) {

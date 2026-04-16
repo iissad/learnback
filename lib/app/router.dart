@@ -41,8 +41,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isSplash = state.matchedLocation == '/';
 
       if (authState.status == AuthStatus.authenticated) {
-        // If authenticated, don't allow access to auth pages or splash
-        if (isAuthForm || isSplash) {
+        // If authenticated, don't allow access to auth pages, splash, or confirm-email
+        if (isAuthForm || isSplash || isConfirmEmail) {
           return '/home';
         }
       } else {

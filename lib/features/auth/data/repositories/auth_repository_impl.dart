@@ -13,7 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/auth/login',
+      'auth/login',
       data: {'email': email, 'password': password},
     );
 
@@ -40,8 +40,13 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/auth/register',
-      data: {'name': name, 'email': email, 'password': password},
+      'auth/register',
+      data: {
+        'name': name,
+        'email': email,
+        'password': password,
+        'role': "student",
+      },
     );
 
     final responseBody = response.data!;
@@ -60,5 +65,26 @@ class AuthRepositoryImpl implements AuthRepository {
           responseBody['error'] ??
           'Registration failed',
     );
+  }
+
+  @override
+  Future<AuthResult> getProfile() async {
+    final response = await _dio.get<Map<String, dynamic>>('users/profile');
+
+    final responseBody = response.data!;
+    final dynamic data = responseBody['data'];
+
+    if (data is Map<String, dynamic>) {
+      return AuthResult(
+        token:
+            '', // Token is not returned by profile endpoint, we already have it
+        userId: (data['_id'] ?? data['userId'] ?? '') as String,
+        name: data['name'] as String? ?? '',
+        email: data['email'] as String? ?? '',
+        role: data['role'] as String? ?? '',
+      );
+    }
+
+    throw Exception('Failed to fetch user profile');
   }
 }
