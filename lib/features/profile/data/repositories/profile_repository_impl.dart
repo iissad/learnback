@@ -38,7 +38,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
     final Map<String, dynamic> profile = {};
     if (avatar != null) profile['avatar'] = avatar;
     if (bio != null) profile['bio'] = bio;
-    if (location != null) profile['location'] = location;
 
     if (profile.isNotEmpty) {
       data['profile'] = profile;
@@ -56,7 +55,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
       'role': d['role'],
       'avatar': p['avatar'],
       'bio': p['bio'],
-      'location': p['location'],
     });
   }
 }

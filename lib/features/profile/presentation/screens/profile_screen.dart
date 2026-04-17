@@ -90,8 +90,8 @@ class ProfileScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Image.asset('assets/icons/logo.png', width: 40, height: 40),
-                  const Text('Profile', style: AppTextStyles.headingMedium),
-                  const Icon(Icons.more_vert, color: Colors.white),
+                  const Text('Profile', style: AppTextStyles.headingLarge),
+                  const Icon(Icons.more_vert, color: AppColors.blue, size: 28),
                 ],
               ),
             ),
@@ -107,10 +107,16 @@ class ProfileScreen extends ConsumerWidget {
                 return Center(
                   child: Stack(
                     children: [
-                      CircleAvatar(
-                        radius: 50,
-                        backgroundColor: AppColors.darkBgSecondary,
-                        backgroundImage: AssetImage('assets/avatars/$avatar'),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: AppColors.blue, width: 3.5),
+                        ),
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: AppColors.darkBgSecondary,
+                          backgroundImage: AssetImage('assets/avatars/$avatar'),
+                        ),
                       ),
                       Positioned(
                         bottom: 0,
@@ -120,13 +126,13 @@ class ProfileScreen extends ConsumerWidget {
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: const BoxDecoration(
-                              color: AppColors.colorFifth,
+                              color: AppColors.blue,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.edit,
                               color: AppColors.darkBgPrimary,
-                              size: 16,
+                              size: 20,
                             ),
                           ),
                         ),
