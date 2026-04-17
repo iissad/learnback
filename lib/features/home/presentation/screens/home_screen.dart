@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,6 +26,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.invalidate(userSkillsProvider);
     ref.invalidate(userGoalsProvider);
 
+    // Wait a microtask so Riverpod rebuilds the provider state
+    // before we try to read the new futures.
+    await Future.microtask(() {});
+
     try {
       await Future.wait([
         ref.read(profileProvider.future),
@@ -32,7 +37,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.read(userGoalsProvider.future),
       ]);
       _refreshController.refreshCompleted();
-    } catch (_) {
+    } catch (e, st) {
+      dev.log('Refresh failed', name: 'HomeScreen', error: e, stackTrace: st);
       _refreshController.refreshFailed();
     }
   }

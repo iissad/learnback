@@ -11,14 +11,43 @@ class SkillsRepositoryImpl implements SkillsRepository {
   @override
   Future<List<UserSkill>> getUserSkills() async {
     final response = await _dio.get('users/getskill');
-    final List data = response.data;
-    return data.map((e) => UserSkill.fromJson(e)).toList();
+    final responseBody = response.data as Map<String, dynamic>;
+    final List data = responseBody['data'] as List;
+    return data.map((e) {
+      final m = e as Map<String, dynamic>;
+      // skillId is a populated object: { _id, name, category }
+      final skillIdObj = m['skillId'];
+      final skillId = (skillIdObj is Map)
+          ? skillIdObj['_id'] as String
+          : skillIdObj as String;
+      return UserSkill.fromJson({
+        'id': m['_id'] ?? m['id'] ?? '',
+        'userId': m['userId'] ?? m['user'] ?? '',
+        'skillId': skillId,
+        'level': m['level'],
+        'source': m['source'],
+      });
+    }).toList();
   }
 
   @override
   Future<List<LearningGoal>> getUserGoals() async {
     final response = await _dio.get('learninggoals/usergoal');
-    final List data = response.data;
-    return data.map((e) => LearningGoal.fromJson(e)).toList();
+    final responseBody = response.data as Map<String, dynamic>;
+    final List data = responseBody['data'] as List;
+    return data.map((e) {
+      final m = e as Map<String, dynamic>;
+      // skillId is a populated object: { _id, name }
+      final skillIdObj = m['skillId'];
+      final skillId = (skillIdObj is Map)
+          ? skillIdObj['_id'] as String
+          : skillIdObj as String;
+      return LearningGoal.fromJson({
+        'id': m['_id'] ?? m['id'] ?? '',
+        'userId': m['userId'] ?? m['user'] ?? '',
+        'skillId': skillId,
+        'createdAt': m['createdAt'] ?? DateTime.now().toIso8601String(),
+      });
+    }).toList();
   }
 }

@@ -10,11 +10,18 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<User> getProfile() async {
     final response = await _dio.get('users/profile');
-    // Assuming backend returns { success: true, user: { ... } } or just the user
-    // Based on context: GET users/profile returns { name, profile, points, ... }
-    // Let's assume the body is the user object for now, or check further.
-    // The previous implementation used 'result.userId' from getProfile in AuthNotifier.
-    // Let's see how AuthRepository.getProfile was implemented.
-    return User.fromJson(response.data);
+    final responseBody = response.data as Map<String, dynamic>;
+    final d = responseBody['data'] as Map<String, dynamic>;
+    final profile = d['profile'] as Map<String, dynamic>? ?? {};
+    return User.fromJson({
+      'id': d['_id'],
+      'name': d['name'],
+      'email': d['email'],
+      'points': d['points'],
+      'role': d['role'],
+      'avatar': profile['avatar'],
+      'bio': profile['bio'],
+      'location': profile['location'],
+    });
   }
 }
