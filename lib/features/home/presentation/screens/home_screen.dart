@@ -211,7 +211,7 @@ class HomeScreen extends ConsumerWidget {
         Expanded(
           child: _buildInfoField(
             'Streak',
-            '12 days 🔥',
+            '07 days 🔥',
             Icons.local_fire_department_rounded,
             Colors.orangeAccent,
           ),
@@ -240,20 +240,31 @@ class HomeScreen extends ConsumerWidget {
         children: [
           Icon(icon, color: color, size: 28),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.darkTextSecondary,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  label,
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.darkTextSecondary,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ),
-              Text(
-                value,
-                style: AppTextStyles.headingSmall.copyWith(color: Colors.white),
-              ),
-            ],
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    value,
+                    style: AppTextStyles.headingSmall.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
