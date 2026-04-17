@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -36,6 +37,18 @@ class DioClient {
           // TODO: centralized error handling, navigation on 401
           return handler.next(e);
         },
+      ),
+    );
+    // Add logging interceptor for full logs
+    _dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestHeader: true,
+        requestBody: true,
+        responseHeader: true,
+        responseBody: true,
+        error: true,
+        logPrint: (Object object) => dev.log('[log] $object'),
       ),
     );
   }
