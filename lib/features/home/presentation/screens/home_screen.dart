@@ -89,7 +89,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 height: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.0,
-                                  color: AppColors.colorFifth,
+                                  color: AppColors.blueLight,
                                 ),
                               ),
                             );
@@ -253,7 +253,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
           Icon(
             Icons.filter_list_rounded,
-            color: AppColors.colorFifth.withValues(alpha: 0.6),
+            color: AppColors.blueLight.withValues(alpha: 0.6),
             size: 25,
           ),
         ],
@@ -269,7 +269,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             'Score',
             isLoading ? '...' : score.toString(),
             Icons.stars_rounded,
-            AppColors.colorFifth,
+            AppColors.blueLight,
           ),
         ),
         const SizedBox(width: AppSpacing.md),
@@ -391,7 +391,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           Text(
             value,
             style: AppTextStyles.headingLarge.copyWith(
-              color: AppColors.colorFifth,
+              color: AppColors.blueLight,
             ),
           ),
           if (subtitle != null) ...[
@@ -399,7 +399,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Text(
               subtitle,
               style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.colorFifth.withValues(alpha: 0.8),
+                color: AppColors.blueLight.withValues(alpha: 0.8),
               ),
             ),
           ],

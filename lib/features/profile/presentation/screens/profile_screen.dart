@@ -373,30 +373,48 @@ class ProfileScreen extends ConsumerWidget {
   Widget _buildPointsCard(int points, {bool isLoading = false}) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.md,
+      ),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [AppColors.colorFifth, AppColors.colorSixth],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
       ),
-      child: Column(
+      child: Row(
         children: [
-          const Icon(Icons.stars_rounded, color: Colors.white, size: 48),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            'Total Points',
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: Colors.white.withValues(alpha: 0.9),
-              fontWeight: FontWeight.w600,
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.stars_rounded,
+              color: Colors.white,
+              size: 32,
             ),
           ),
-          const SizedBox(height: AppSpacing.xs),
-          Text(
-            isLoading ? '...' : points.toString(),
-            style: AppTextStyles.displayLarge.copyWith(color: Colors.white),
+          const SizedBox(width: AppSpacing.md),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Total Points',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: Colors.white.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                isLoading ? '...' : points.toString(),
+                style: AppTextStyles.headingLarge.copyWith(color: Colors.white),
+              ),
+            ],
           ),
         ],
       ),
@@ -425,14 +443,14 @@ class ProfileScreen extends ConsumerWidget {
           Text(
             title,
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.darkTextSecondary,
+              color: AppColors.darkTextPrimary,
             ),
           ),
           const SizedBox(height: 4),
           Text(
             value,
             style: AppTextStyles.headingLarge.copyWith(
-              color: AppColors.colorFifth,
+              color: AppColors.blueLight,
             ),
           ),
           if (subtitle != null) ...[
@@ -440,7 +458,7 @@ class ProfileScreen extends ConsumerWidget {
             Text(
               subtitle,
               style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.colorFifth.withValues(alpha: 0.8),
+                color: AppColors.blueLight,
               ),
             ),
           ],
@@ -492,7 +510,7 @@ class ProfileScreen extends ConsumerWidget {
             IconButton(
               icon: const Icon(
                 Icons.edit,
-                color: AppColors.colorFifth,
+                color: AppColors.blueLight,
                 size: 20,
               ),
               onPressed: onEdit,
