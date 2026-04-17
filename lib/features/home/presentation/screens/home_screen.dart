@@ -32,6 +32,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.read(userSkillsProvider.future),
         ref.read(userGoalsProvider.future),
       ]);
+
+      // Artificial delay to ensure the professional loading state is seen
+      await Future.delayed(const Duration(milliseconds: 500));
     } catch (e, st) {
       dev.log('Refresh failed', name: 'HomeScreen', error: e, stackTrace: st);
     }
@@ -82,8 +85,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               mode == RefreshIndicatorMode.armed) {
                             return const Center(
                               child: SizedBox(
-                                width: 26,
-                                height: 26,
+                                width: 22,
+                                height: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2.0,
                                   color: AppColors.colorFifth,
@@ -115,15 +118,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         profileAsync.when(
                           data: (user) => Text(
                             'Welcome back, ${user.name}',
-                            style: AppTextStyles.headingLarge,
+                            style: AppTextStyles.headingLarge.copyWith(
+                              color: AppColors.blueLight,
+                            ),
                           ),
-                          loading: () => const Text(
+                          loading: () => Text(
                             'Welcome back',
-                            style: AppTextStyles.headingLarge,
+                            style: AppTextStyles.headingLarge.copyWith(
+                              color: AppColors.darkTextSecondary,
+                            ),
                           ),
-                          error: (err, stack) => const Text(
+                          error: (err, stack) => Text(
                             'Welcome back',
-                            style: AppTextStyles.headingLarge,
+                            style: AppTextStyles.headingLarge.copyWith(
+                              color: AppColors.darkTextSecondary,
+                            ),
                           ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
@@ -176,19 +185,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.md),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              // TODO: Navigate to edit skills/goals
-                            },
-                            child: const Text(
-                              'Edit Lists',
-                              style: AppTextStyles.labelLink,
-                            ),
-                          ),
-                        ),
+
                         const SizedBox(height: AppSpacing.xxl),
                       ]),
                     ),
@@ -206,13 +203,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Image.asset('assets/icons/logo.png', width: 40, height: 40),
-            const SizedBox(width: 8),
-            const Text('LearnBack', style: AppTextStyles.headingLarge),
-          ],
-        ),
+        Image.asset('assets/icons/logo.png', width: 40, height: 40),
+        const Text('LearnBack', style: AppTextStyles.headingLarge),
         SvgPicture.asset(
           'assets/icons/notification.svg',
           width: 28,
