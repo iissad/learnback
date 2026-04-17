@@ -39,16 +39,44 @@ class DioClient {
         },
       ),
     );
-    // Add logging interceptor for full logs
+    // Custom logging interceptor
     _dio.interceptors.add(
-      LogInterceptor(
-        request: true,
-        requestHeader: true,
-        requestBody: true,
-        responseHeader: true,
-        responseBody: true,
-        error: true,
-        logPrint: (Object object) => dev.log('[log] $object'),
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final isPost = options.method.toUpperCase() == 'POST';
+          final auth = options.headers['Authorization'];
+          final buffer = StringBuffer()
+            ..writeln('┌── REQUEST ─────────────────────────')
+            ..writeln('│ ${options.method}  ${options.uri}');
+          if (isPost && options.data != null) {
+            buffer.writeln('│ Body: ${options.data}');
+          }
+          if (auth != null) {
+            buffer.writeln('│ Auth: $auth');
+          }
+          buffer.write('└────────────────────────────────────');
+          dev.log(buffer.toString(), name: 'DioClient');
+          return handler.next(options);
+        },
+        onResponse: (response, handler) {
+          final buffer = StringBuffer()
+            ..writeln('┌── RESPONSE ────────────────────────')
+            ..writeln('│ Status: ${response.statusCode}')
+            ..writeln('│ Body:   ${response.data}')
+            ..write('└────────────────────────────────────');
+          dev.log(buffer.toString(), name: 'DioClient');
+          return handler.next(response);
+        },
+        onError: (DioException e, handler) {
+          final buffer = StringBuffer()
+            ..writeln('┌── ERROR ───────────────────────────')
+            ..writeln('│ Status: ${e.response?.statusCode}')
+            ..writeln('│ Body:   ${e.response?.data}')
+            ..writeln('│ Error:  ${e.message}')
+            ..write('└────────────────────────────────────');
+          dev.log(buffer.toString(), name: 'DioClient', error: e);
+          return handler.next(e);
+        },
       ),
     );
   }

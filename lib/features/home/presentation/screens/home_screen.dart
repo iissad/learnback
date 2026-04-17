@@ -25,13 +25,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     ref.invalidate(userSkillsProvider);
     ref.invalidate(userGoalsProvider);
 
-    await Future.wait([
-      ref.read(profileProvider.future),
-      ref.read(userSkillsProvider.future),
-      ref.read(userGoalsProvider.future),
-    ]);
-
-    _refreshController.refreshCompleted();
+    try {
+      await Future.wait([
+        ref.read(profileProvider.future),
+        ref.read(userSkillsProvider.future),
+        ref.read(userGoalsProvider.future),
+      ]);
+      _refreshController.refreshCompleted();
+    } catch (_) {
+      _refreshController.refreshFailed();
+    }
   }
 
   @override
