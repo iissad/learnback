@@ -2,7 +2,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:learnback/app/theme/app_colors.dart';
 import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
@@ -17,11 +17,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final RefreshController _refreshController = RefreshController(
-    initialRefresh: false,
-  );
-
-  void _onRefresh() async {
+  Future<void> _onRefresh() async {
     ref.invalidate(profileProvider);
     ref.invalidate(userSkillsProvider);
     ref.invalidate(userGoalsProvider);
@@ -36,17 +32,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ref.read(userSkillsProvider.future),
         ref.read(userGoalsProvider.future),
       ]);
-      _refreshController.refreshCompleted();
     } catch (e, st) {
       dev.log('Refresh failed', name: 'HomeScreen', error: e, stackTrace: st);
-      _refreshController.refreshFailed();
     }
-  }
-
-  @override
-  void dispose() {
-    _refreshController.dispose();
-    super.dispose();
   }
 
   @override
@@ -75,141 +63,137 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             // Scrollable Content with Pull to Refresh
             Expanded(
-              child: SmartRefresher(
-                controller: _refreshController,
-                onRefresh: _onRefresh,
-                header: CustomHeader(
-                  builder: (context, mode) {
-                    Widget body;
-                    if (mode == RefreshStatus.idle) {
-                      body = Icon(
-                        Icons.arrow_downward_rounded,
-                        color: AppColors.darkTextSecondary.withValues(
-                          alpha: 0.5,
-                        ),
-                        size: 24,
-                      );
-                    } else if (mode == RefreshStatus.refreshing) {
-                      body = const SizedBox(
-                        width: 25,
-                        height: 25,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          color: AppColors.colorFifth,
-                        ),
-                      );
-                    } else if (mode == RefreshStatus.failed) {
-                      body = const Text("Refresh failed");
-                    } else if (mode == RefreshStatus.canRefresh) {
-                      body = Icon(
-                        Icons.expand_circle_down_rounded,
-                        color: AppColors.colorFifth,
-                        size: 24,
-                      );
-                    } else {
-                      body = const SizedBox.shrink();
-                    }
-                    return SizedBox(height: 55.0, child: Center(child: body));
-                  },
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics(),
                 ),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                  ),
-                  children: [
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 2. Score and Streak fields
-                    profileAsync.when(
-                      data: (user) => _buildScoreAndStreakRow(user.points),
-                      loading: () =>
-                          _buildScoreAndStreakRow(0, isLoading: true),
-                      error: (err, stack) => _buildScoreAndStreakRow(0),
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-
-                    // 3. Welcome message
-                    profileAsync.when(
-                      data: (user) => Text(
-                        'Welcome back, ${user.name}',
-                        style: AppTextStyles.headingLarge,
-                      ),
-                      loading: () => const Text(
-                        'Welcome back',
-                        style: AppTextStyles.headingLarge,
-                      ),
-                      error: (err, stack) => const Text(
-                        'Welcome back',
-                        style: AppTextStyles.headingLarge,
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // 4. Active project section
-                    _buildSectionHeader('Active projects'),
-                    const SizedBox(height: AppSpacing.sm),
-                    _buildProjectCard(),
-                    const SizedBox(height: AppSpacing.xl),
-
-                    // 5. Learning goals and Mastered skills
-                    Row(
-                      children: [
-                        Expanded(
-                          child: userGoalsAsync.when(
-                            data: (goals) => _buildStatCard(
-                              'Learning Goals',
-                              goals.length.toString(),
-                              subtitle: goals.isEmpty
-                                  ? 'Set some goals!'
-                                  : null,
-                            ),
-                            loading: () => _buildStatCard(
-                              'Learning Goals',
-                              '...',
-                              isLoading: true,
-                            ),
-                            error: (err, stack) =>
-                                _buildStatCard('Learning Goals', '0'),
-                          ),
-                        ),
-                        const SizedBox(width: AppSpacing.md),
-                        Expanded(
-                          child: userSkillsAsync.when(
-                            data: (skills) => _buildStatCard(
-                              'Mastered Skills',
-                              skills.length.toString(),
-                              subtitle: skills.isEmpty
-                                  ? 'Start learning!'
-                                  : null,
-                            ),
-                            loading: () => _buildStatCard(
-                              'Mastered Skills',
-                              '...',
-                              isLoading: true,
-                            ),
-                            error: (err, stack) =>
-                                _buildStatCard('Mastered Skills', '0'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          // TODO: Navigate to edit skills/goals
+                slivers: [
+                  CupertinoSliverRefreshControl(
+                    onRefresh: _onRefresh,
+                    builder:
+                        (
+                          context,
+                          mode,
+                          pulledExtent,
+                          refreshTriggerPullDistance,
+                          refreshIndicatorExtent,
+                        ) {
+                          if (mode == RefreshIndicatorMode.refresh ||
+                              mode == RefreshIndicatorMode.armed) {
+                            return const Center(
+                              child: SizedBox(
+                                width: 26,
+                                height: 26,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  color: AppColors.colorFifth,
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
                         },
-                        child: const Text(
-                          'Edit Lists',
-                          style: AppTextStyles.labelLink,
-                        ),
-                      ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
                     ),
-                    const SizedBox(height: AppSpacing.xxl),
-                  ],
-                ),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        const SizedBox(height: AppSpacing.lg),
+
+                        // 2. Score and Streak fields
+                        profileAsync.when(
+                          data: (user) => _buildScoreAndStreakRow(user.points),
+                          loading: () =>
+                              _buildScoreAndStreakRow(0, isLoading: true),
+                          error: (err, stack) => _buildScoreAndStreakRow(0),
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+
+                        // 3. Welcome message
+                        profileAsync.when(
+                          data: (user) => Text(
+                            'Welcome back, ${user.name}',
+                            style: AppTextStyles.headingLarge,
+                          ),
+                          loading: () => const Text(
+                            'Welcome back',
+                            style: AppTextStyles.headingLarge,
+                          ),
+                          error: (err, stack) => const Text(
+                            'Welcome back',
+                            style: AppTextStyles.headingLarge,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        // 4. Active project section
+                        _buildSectionHeader('Active projects'),
+                        const SizedBox(height: AppSpacing.sm),
+                        _buildProjectCard(),
+                        const SizedBox(height: AppSpacing.xl),
+
+                        // 5. Learning goals and Mastered skills
+                        Row(
+                          children: [
+                            Expanded(
+                              child: userGoalsAsync.when(
+                                data: (goals) => _buildStatCard(
+                                  'Learning Goals',
+                                  goals.length.toString(),
+                                  subtitle: goals.isEmpty
+                                      ? 'Set some goals!'
+                                      : null,
+                                ),
+                                loading: () => _buildStatCard(
+                                  'Learning Goals',
+                                  '...',
+                                  isLoading: true,
+                                ),
+                                error: (err, stack) =>
+                                    _buildStatCard('Learning Goals', '0'),
+                              ),
+                            ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: userSkillsAsync.when(
+                                data: (skills) => _buildStatCard(
+                                  'Mastered Skills',
+                                  skills.length.toString(),
+                                  subtitle: skills.isEmpty
+                                      ? 'Start learning!'
+                                      : null,
+                                ),
+                                loading: () => _buildStatCard(
+                                  'Mastered Skills',
+                                  '...',
+                                  isLoading: true,
+                                ),
+                                error: (err, stack) =>
+                                    _buildStatCard('Mastered Skills', '0'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              // TODO: Navigate to edit skills/goals
+                            },
+                            child: const Text(
+                              'Edit Lists',
+                              style: AppTextStyles.labelLink,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
+                      ]),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -378,7 +362,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
       child: const Center(
         child: Text(
-          'You have no active projects yet, so no linking for now.',
+          'You have no active projects yet.',
           textAlign: TextAlign.center,
           style: AppTextStyles.bodyMedium,
         ),
