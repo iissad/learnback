@@ -20,9 +20,13 @@ abstract class AppColors {
 
   // ── Accent ─────────────────────────────────────────────────────────
   static const Color cyan = Color(0xFF00F2FE); // gradient start / links
+  static const Color colorFifth = cyan;
   static const Color purple = Color(0xFF7367F0); // gradient end
+  static const Color colorSixth = purple;
   static const Color blue = Color(0xFF4988C4);
+  static const Color colorThird = blue;
   static const Color blueLight = Color(0xFF13A4EC);
+  static const Color colorForth = blueLight;
   static const Color darkBorder = Color(0xFF4988C4);
 
   // ── Semantic ───────────────────────────────────────────────────────

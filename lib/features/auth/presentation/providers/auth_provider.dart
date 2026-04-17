@@ -1,26 +1,10 @@
 import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:learnback/core/network/dio_client.dart';
+import 'package:learnback/core/providers/common_providers.dart';
 import 'package:learnback/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:learnback/features/auth/domain/repositories/auth_repository.dart';
-
-// ── Infrastructure providers ──────────────────────────────────────────────────
-
-final _secureStorageProvider = Provider<FlutterSecureStorage>(
-  (_) => const FlutterSecureStorage(),
-);
-
-final _dioProvider = Provider<Dio>((ref) {
-  final storage = ref.watch(_secureStorageProvider);
-  return DioClient(secureStorage: storage).dio;
-});
-
-final authRepositoryProvider = Provider<AuthRepository>(
-  (ref) => AuthRepositoryImpl(dio: ref.watch(_dioProvider)),
-);
 
 // ── Auth state ────────────────────────────────────────────────────────────────
 
@@ -63,7 +47,7 @@ class AuthNotifier extends Notifier<AuthState> {
     return const AuthState();
   }
 
-  FlutterSecureStorage get _storage => ref.read(_secureStorageProvider);
+  FlutterSecureStorage get _storage => ref.read(secureStorageProvider);
   AuthRepository get _repo => ref.read(authRepositoryProvider);
 
   Future<void> _restoreSession() async {
@@ -113,8 +97,6 @@ class AuthNotifier extends Notifier<AuthState> {
     try {
       await _repo.register(name: name, email: email, password: password);
       log('Registration successful.');
-      // We return registered state so the UI knows to push to /confirm-email
-      // but we do NOT authenticate them since they must verify email and login again.
       state = const AuthState(status: AuthStatus.registered);
     } on DioException catch (e) {
       final msg = _extractError(e);
@@ -148,20 +130,14 @@ class AuthNotifier extends Notifier<AuthState> {
     log('Handling deep link token');
     state = const AuthState(status: AuthStatus.loading);
     try {
-      // 1. Save the token first so repository can use it via interceptor
       await _storage.write(key: _tokenKey, value: token);
-
-      // 2. Fetch profile info
       final result = await _repo.getProfile();
-
-      // 3. Save user details
       await Future.wait([
         _storage.write(key: 'user_id', value: result.userId),
         _storage.write(key: 'user_name', value: result.name),
         _storage.write(key: 'user_email', value: result.email),
         _storage.write(key: 'user_role', value: result.role),
       ]);
-
       state = AuthState(status: AuthStatus.authenticated, token: token);
       log('Deep link authentication successful.');
     } catch (e, stack) {
@@ -183,6 +159,10 @@ class AuthNotifier extends Notifier<AuthState> {
     return e.message ?? 'An error occurred.';
   }
 }
+
+final authRepositoryProvider = Provider<AuthRepository>(
+  (ref) => AuthRepositoryImpl(dio: ref.watch(dioProvider)),
+);
 
 final authProvider = NotifierProvider<AuthNotifier, AuthState>(
   AuthNotifier.new,
