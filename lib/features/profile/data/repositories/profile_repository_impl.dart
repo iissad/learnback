@@ -24,4 +24,39 @@ class ProfileRepositoryImpl implements ProfileRepository {
       'location': profile['location'],
     });
   }
+
+  @override
+  Future<User> updateProfile({
+    String? name,
+    String? avatar,
+    String? bio,
+    String? location,
+  }) async {
+    final Map<String, dynamic> data = {};
+    if (name != null) data['name'] = name;
+
+    final Map<String, dynamic> profile = {};
+    if (avatar != null) profile['avatar'] = avatar;
+    if (bio != null) profile['bio'] = bio;
+    if (location != null) profile['location'] = location;
+
+    if (profile.isNotEmpty) {
+      data['profile'] = profile;
+    }
+
+    final response = await _dio.put('users/profile', data: data);
+    final responseBody = response.data as Map<String, dynamic>;
+    final d = responseBody['data'] as Map<String, dynamic>;
+    final p = d['profile'] as Map<String, dynamic>? ?? {};
+    return User.fromJson({
+      'id': d['_id'],
+      'name': d['name'],
+      'email': d['email'],
+      'points': d['points'],
+      'role': d['role'],
+      'avatar': p['avatar'],
+      'bio': p['bio'],
+      'location': p['location'],
+    });
+  }
 }
