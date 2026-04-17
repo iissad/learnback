@@ -10,14 +10,14 @@ class SkillsRepositoryImpl implements SkillsRepository {
 
   @override
   Future<List<UserSkill>> getUserSkills() async {
-    final response = await _dio.get('users/skills');
+    final response = await _dio.get('users/getskill');
     final List data = response.data;
     return data.map((e) => UserSkill.fromJson(e)).toList();
   }
 
   @override
   Future<List<LearningGoal>> getUserGoals() async {
-    final response = await _dio.get('users/goals');
+    final response = await _dio.get('learninggoals/usergoal');
     final List data = response.data;
     return data.map((e) => LearningGoal.fromJson(e)).toList();
   }
