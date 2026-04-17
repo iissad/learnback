@@ -69,7 +69,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   _buildTopBar(),
                   const SizedBox(height: AppSpacing.lg),
                   _buildSearchBar(),
-                  const SizedBox(height: AppSpacing.lg),
                 ],
               ),
             ),
@@ -113,104 +112,103 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     return SizedBox(height: 55.0, child: Center(child: body));
                   },
                 ),
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.lg,
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // 2. Score and Streak fields
-                      profileAsync.when(
-                        data: (user) => _buildScoreAndStreakRow(user.points),
-                        loading: () =>
-                            _buildScoreAndStreakRow(0, isLoading: true),
-                        error: (err, stack) => _buildScoreAndStreakRow(0),
+                  children: [
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 2. Score and Streak fields
+                    profileAsync.when(
+                      data: (user) => _buildScoreAndStreakRow(user.points),
+                      loading: () =>
+                          _buildScoreAndStreakRow(0, isLoading: true),
+                      error: (err, stack) => _buildScoreAndStreakRow(0),
+                    ),
+                    const SizedBox(height: AppSpacing.lg),
+
+                    // 3. Welcome message
+                    profileAsync.when(
+                      data: (user) => Text(
+                        'Welcome back, ${user.name}',
+                        style: AppTextStyles.headingLarge,
                       ),
-                      const SizedBox(height: AppSpacing.lg),
-
-                      // 3. Welcome message
-                      profileAsync.when(
-                        data: (user) => Text(
-                          'Welcome back, ${user.name}',
-                          style: AppTextStyles.headingLarge,
-                        ),
-                        loading: () => const Text(
-                          'Welcome back',
-                          style: AppTextStyles.headingLarge,
-                        ),
-                        error: (err, stack) => const Text(
-                          'Welcome back',
-                          style: AppTextStyles.headingLarge,
-                        ),
+                      loading: () => const Text(
+                        'Welcome back',
+                        style: AppTextStyles.headingLarge,
                       ),
-                      const SizedBox(height: AppSpacing.xl),
+                      error: (err, stack) => const Text(
+                        'Welcome back',
+                        style: AppTextStyles.headingLarge,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xl),
 
-                      // 4. Active project section
-                      _buildSectionHeader('Active projects'),
-                      const SizedBox(height: AppSpacing.sm),
-                      _buildProjectCard(),
-                      const SizedBox(height: AppSpacing.xl),
+                    // 4. Active project section
+                    _buildSectionHeader('Active projects'),
+                    const SizedBox(height: AppSpacing.sm),
+                    _buildProjectCard(),
+                    const SizedBox(height: AppSpacing.xl),
 
-                      // 5. Learning goals and Mastered skills
-                      Row(
-                        children: [
-                          Expanded(
-                            child: userGoalsAsync.when(
-                              data: (goals) => _buildStatCard(
-                                'Learning Goals',
-                                goals.length.toString(),
-                                subtitle: goals.isEmpty
-                                    ? 'Set some goals!'
-                                    : null,
-                              ),
-                              loading: () => _buildStatCard(
-                                'Learning Goals',
-                                '...',
-                                isLoading: true,
-                              ),
-                              error: (err, stack) =>
-                                  _buildStatCard('Learning Goals', '0'),
+                    // 5. Learning goals and Mastered skills
+                    Row(
+                      children: [
+                        Expanded(
+                          child: userGoalsAsync.when(
+                            data: (goals) => _buildStatCard(
+                              'Learning Goals',
+                              goals.length.toString(),
+                              subtitle: goals.isEmpty
+                                  ? 'Set some goals!'
+                                  : null,
                             ),
-                          ),
-                          const SizedBox(width: AppSpacing.md),
-                          Expanded(
-                            child: userSkillsAsync.when(
-                              data: (skills) => _buildStatCard(
-                                'Mastered Skills',
-                                skills.length.toString(),
-                                subtitle: skills.isEmpty
-                                    ? 'Start learning!'
-                                    : null,
-                              ),
-                              loading: () => _buildStatCard(
-                                'Mastered Skills',
-                                '...',
-                                isLoading: true,
-                              ),
-                              error: (err, stack) =>
-                                  _buildStatCard('Mastered Skills', '0'),
+                            loading: () => _buildStatCard(
+                              'Learning Goals',
+                              '...',
+                              isLoading: true,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            // TODO: Navigate to edit skills/goals
-                          },
-                          child: const Text(
-                            'Edit Lists',
-                            style: AppTextStyles.labelLink,
+                            error: (err, stack) =>
+                                _buildStatCard('Learning Goals', '0'),
                           ),
                         ),
+                        const SizedBox(width: AppSpacing.md),
+                        Expanded(
+                          child: userSkillsAsync.when(
+                            data: (skills) => _buildStatCard(
+                              'Mastered Skills',
+                              skills.length.toString(),
+                              subtitle: skills.isEmpty
+                                  ? 'Start learning!'
+                                  : null,
+                            ),
+                            loading: () => _buildStatCard(
+                              'Mastered Skills',
+                              '...',
+                              isLoading: true,
+                            ),
+                            error: (err, stack) =>
+                                _buildStatCard('Mastered Skills', '0'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          // TODO: Navigate to edit skills/goals
+                        },
+                        child: const Text(
+                          'Edit Lists',
+                          style: AppTextStyles.labelLink,
+                        ),
                       ),
-                      const SizedBox(height: AppSpacing.xxl),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: AppSpacing.xxl),
+                  ],
                 ),
               ),
             ),
