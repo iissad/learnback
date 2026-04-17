@@ -100,6 +100,7 @@ class ProfileScreen extends ConsumerWidget {
 
             // Avatar
             profileState.when(
+              skipLoadingOnReload: true,
               data: (user) {
                 final avatar = user.avatar == ""
                     ? 'avatar5.png'
@@ -108,21 +109,33 @@ class ProfileScreen extends ConsumerWidget {
                   child: Stack(
                     children: [
                       Container(
+                        width: 120,
+                        height: 120,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           border: Border.all(color: AppColors.blue, width: 3.5),
                         ),
-                        child: CircleAvatar(
-                          radius: 60,
-                          backgroundColor: AppColors.darkBgSecondary,
-                          backgroundImage: AssetImage('assets/avatars/$avatar'),
-                        ),
+                        child: profileState.isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.colorFifth,
+                                ),
+                              )
+                            : CircleAvatar(
+                                radius: 60,
+                                backgroundColor: AppColors.darkBgSecondary,
+                                backgroundImage: AssetImage(
+                                  'assets/avatars/$avatar',
+                                ),
+                              ),
                       ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
-                          onTap: () => _showAvatarPicker(context, ref, avatar!),
+                          onTap: profileState.isLoading
+                              ? null
+                              : () => _showAvatarPicker(context, ref, avatar!),
                           child: Container(
                             padding: const EdgeInsets.all(8),
                             decoration: const BoxDecoration(
