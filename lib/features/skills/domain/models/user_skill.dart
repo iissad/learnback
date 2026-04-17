@@ -4,7 +4,7 @@ part 'user_skill.freezed.dart';
 part 'user_skill.g.dart';
 
 @freezed
-class UserSkill with _$UserSkill {
+abstract class UserSkill with _$UserSkill {
   const factory UserSkill({
     required String id,
     required String userId,

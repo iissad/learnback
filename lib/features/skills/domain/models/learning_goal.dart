@@ -4,7 +4,7 @@ part 'learning_goal.freezed.dart';
 part 'learning_goal.g.dart';
 
 @freezed
-class LearningGoal with _$LearningGoal {
+abstract class LearningGoal with _$LearningGoal {
   const factory LearningGoal({
     required String id,
     required String userId,

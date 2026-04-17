@@ -84,7 +84,8 @@ class HomeScreen extends ConsumerWidget {
                           '...',
                           isLoading: true,
                         ),
-                        error: (_, __) => _buildStatCard('Learning Goals', '0'),
+                        error: (err, stack) =>
+                            _buildStatCard('Learning Goals', '0'),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -100,7 +101,7 @@ class HomeScreen extends ConsumerWidget {
                           '...',
                           isLoading: true,
                         ),
-                        error: (_, __) =>
+                        error: (err, stack) =>
                             _buildStatCard('Mastered Skills', '0'),
                       ),
                     ),
