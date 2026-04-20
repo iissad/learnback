@@ -130,7 +130,6 @@ class ProfileScreen extends ConsumerWidget {
                     borderSide: BorderSide(color: AppColors.colorFifth),
                   ),
                 ),
-                maxLines: 3,
               ),
             ],
           ),
@@ -144,7 +143,7 @@ class ProfileScreen extends ConsumerWidget {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.colorFifth,
+                backgroundColor: AppColors.blue,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
