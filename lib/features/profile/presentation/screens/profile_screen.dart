@@ -5,9 +5,18 @@ import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
 import 'package:learnback/features/profile/presentation/providers/profile_provider.dart';
 import 'package:learnback/features/skills/presentation/providers/skills_provider.dart';
+import 'package:learnback/features/courses/presentation/providers/courses_provider.dart';
+import 'package:learnback/features/courses/domain/models/course.dart';
 
-class ProfileScreen extends ConsumerWidget {
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
+
+  @override
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  int _activeTabIndex = 0;
 
   void _showAvatarPicker(
     BuildContext context,
@@ -174,7 +183,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final userSkillsAsync = ref.watch(userSkillsProvider);
     final userGoalsAsync = ref.watch(userGoalsProvider);
@@ -341,25 +350,6 @@ class ProfileScreen extends ConsumerWidget {
                         Row(
                           children: [
                             Expanded(
-                              child: userGoalsAsync.when(
-                                data: (goals) => _buildStatCard(
-                                  'Learning Goals',
-                                  goals.length.toString(),
-                                  subtitle: goals.isEmpty
-                                      ? 'Set some goals!'
-                                      : null,
-                                ),
-                                loading: () => _buildStatCard(
-                                  'Learning Goals',
-                                  '...',
-                                  isLoading: true,
-                                ),
-                                error: (err, stack) =>
-                                    _buildStatCard('Learning Goals', '0'),
-                              ),
-                            ),
-                            const SizedBox(width: AppSpacing.md),
-                            Expanded(
                               child: userSkillsAsync.when(
                                 data: (skills) => _buildStatCard(
                                   'Mastered Skills',
@@ -377,7 +367,118 @@ class ProfileScreen extends ConsumerWidget {
                                     _buildStatCard('Mastered Skills', '0'),
                               ),
                             ),
+                            const SizedBox(width: AppSpacing.md),
+                            Expanded(
+                              child: userGoalsAsync.when(
+                                data: (goals) => _buildStatCard(
+                                  'Learning Goals',
+                                  goals.length.toString(),
+                                  subtitle: goals.isEmpty
+                                      ? 'Set some goals!'
+                                      : null,
+                                ),
+                                loading: () => _buildStatCard(
+                                  'Learning Goals',
+                                  '...',
+                                  isLoading: true,
+                                ),
+                                error: (err, stack) =>
+                                    _buildStatCard('Learning Goals', '0'),
+                              ),
+                            ),
                           ],
+                        ),
+                        const SizedBox(height: AppSpacing.xxl),
+
+                        // Rewards Section
+                        DefaultTabController(
+                          length: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TabBar(
+                                isScrollable: true,
+                                tabAlignment: TabAlignment.start,
+                                indicatorColor: AppColors.colorFifth,
+                                labelColor: AppColors.colorFifth,
+                                unselectedLabelColor:
+                                    AppColors.darkTextSecondary,
+                                dividerColor: Colors.transparent,
+                                onTap: (index) {
+                                  setState(() {
+                                    _activeTabIndex = index;
+                                  });
+                                },
+                                tabs: const [
+                                  Tab(text: 'Rewards store'),
+                                  Tab(text: 'Unlocked'),
+                                ],
+                              ),
+                              const SizedBox(height: AppSpacing.md),
+                              // Conditional Rendering instead of TabBarView for dynamic height
+                              if (_activeTabIndex == 0)
+                                ref
+                                    .watch(availableCoursesProvider)
+                                    .when(
+                                      data: (courses) => courses.isEmpty
+                                          ? const Center(
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 20,
+                                                ),
+                                                child: Text(
+                                                  'No courses available',
+                                                  style:
+                                                      AppTextStyles.bodyMedium,
+                                                ),
+                                              ),
+                                            )
+                                          : ListView.builder(
+                                              shrinkWrap: true,
+                                              padding: EdgeInsets.zero,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: courses.length,
+                                              itemBuilder: (context, index) {
+                                                return _buildCourseItem(
+                                                  courses[index],
+                                                );
+                                              },
+                                            ),
+                                      loading: () => const Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 20,
+                                          ),
+                                          child: CircularProgressIndicator(
+                                            color: AppColors.colorFifth,
+                                          ),
+                                        ),
+                                      ),
+                                      error: (e, _) => Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 20,
+                                          ),
+                                          child: Text(
+                                            'Error loading courses',
+                                            style: AppTextStyles.errorText,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                              else
+                                const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    child: Text(
+                                      'No unlocked courses yet',
+                                      style: AppTextStyles.bodyMedium,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.xxl),
                       ],
@@ -493,6 +594,57 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCourseItem(Course course) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      decoration: BoxDecoration(
+        color: AppColors.darkBgSecondary,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  course.title,
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '${course.requiredPoints} ',
+                        style: AppTextStyles.headingMedium.copyWith(
+                          color: AppColors.blue,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'pts',
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.darkTextSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(Icons.lock_rounded, color: AppColors.darkTextSecondary),
         ],
       ),
     );
