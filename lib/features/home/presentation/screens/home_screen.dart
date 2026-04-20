@@ -224,10 +224,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.darkBorder.withValues(alpha: 0.3),
-          width: 1,
-        ),
       ),
       child: Row(
         children: [
@@ -296,10 +292,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.darkBorder.withValues(alpha: 0.2),
-          width: 1,
-        ),
       ),
       child: Row(
         children: [
@@ -347,10 +339,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: AppColors.darkBorder.withValues(alpha: 0.2),
-          width: 1,
-        ),
       ),
       child: const Center(
         child: Text(
@@ -373,10 +361,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.darkBorder.withValues(alpha: 0.2),
-          width: 1,
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

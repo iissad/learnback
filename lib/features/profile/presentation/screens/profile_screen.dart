@@ -265,7 +265,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 child: profileState.isLoading
                                     ? const Center(
                                         child: CircularProgressIndicator(
-                                          color: AppColors.colorFifth,
+                                          color: AppColors.blue,
                                         ),
                                       )
                                     : CircleAvatar(
@@ -564,10 +564,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.darkBorder.withValues(alpha: 0.2),
-          width: 1,
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -606,7 +602,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       decoration: BoxDecoration(
         color: AppColors.darkBgSecondary,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
