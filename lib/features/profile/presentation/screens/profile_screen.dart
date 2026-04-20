@@ -18,165 +18,226 @@ class ProfileScreen extends ConsumerStatefulWidget {
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _activeTabIndex = 0;
 
-  void _showAvatarPicker(
-    BuildContext context,
-    WidgetRef ref,
-    String currentAvatar,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.darkBgSecondary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Choose Avatar', style: AppTextStyles.headingSmall),
-              const SizedBox(height: 16),
-              Expanded(
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 4,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                  ),
-                  itemCount: 16,
-                  itemBuilder: (context, index) {
-                    final avatarName = 'avatar${index + 1}.png';
-                    final isSelected = currentAvatar == avatarName;
-                    return GestureDetector(
-                      onTap: () {
-                        ref
-                            .read(profileProvider.notifier)
-                            .updateProfile(avatar: avatarName);
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isSelected
-                                ? AppColors.colorFifth
-                                : Colors.transparent,
-                            width: 2,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage(
-                            'assets/avatars/$avatarName',
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
   void _showEditProfileDialog(
     BuildContext context,
     WidgetRef ref,
     String currentName,
     String? currentBio,
+    String currentAvatar,
   ) {
     final nameController = TextEditingController(text: currentName);
     final bioController = TextEditingController(text: currentBio ?? '');
+    String selectedAvatar = currentAvatar;
+    bool isPickerExpanded = false;
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: AppColors.darkBgSecondary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          title: const Text('Edit Profile', style: AppTextStyles.headingSmall),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  labelStyle: const TextStyle(
-                    color: AppColors.darkTextSecondary,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.darkBorder.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.colorFifth),
-                  ),
-                ),
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              backgroundColor: AppColors.darkBgSecondary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: bioController,
-                style: const TextStyle(color: Colors.white),
-                decoration: InputDecoration(
-                  labelText: 'Bio',
-                  labelStyle: const TextStyle(
-                    color: AppColors.darkTextSecondary,
-                  ),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.darkBorder.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.colorFifth),
-                  ),
-                ),
+              title: const Text(
+                'Edit Profile',
+                style: AppTextStyles.headingSmall,
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: AppColors.darkTextSecondary),
-              ),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.blue,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              onPressed: () {
-                final newName = nameController.text.trim();
-                final newBio = bioController.text.trim();
+              content: SizedBox(
+                width: 340,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Cohesive Collapsible Avatar Selection
+                      Container(
+                        decoration: BoxDecoration(
+                          color: AppColors.darkBgPrimary.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setDialogState(() {
+                                  isPickerExpanded = !isPickerExpanded;
+                                });
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(AppSpacing.sm),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 20,
+                                      backgroundImage: AssetImage(
+                                        'assets/avatars/$selectedAvatar',
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    const Expanded(
+                                      child: Text(
+                                        'Change Avatar',
+                                        style: AppTextStyles.bodyMedium,
+                                      ),
+                                    ),
+                                    Icon(
+                                      isPickerExpanded
+                                          ? Icons.expand_less
+                                          : Icons.expand_more,
+                                      color: AppColors.darkTextSecondary,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            if (isPickerExpanded) ...[
+                              const Divider(
+                                height: 1,
+                                color: AppColors.darkBorder,
+                                thickness: 0.1,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SizedBox(
+                                  height: 160,
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 4,
+                                          crossAxisSpacing: 8,
+                                          mainAxisSpacing: 8,
+                                        ),
+                                    itemCount: 16,
+                                    itemBuilder: (context, index) {
+                                      final avatarName =
+                                          'avatar${index + 1}.png';
+                                      final isSelected =
+                                          selectedAvatar == avatarName;
+                                      return GestureDetector(
+                                        onTap: () {
+                                          setDialogState(() {
+                                            selectedAvatar = avatarName;
+                                            isPickerExpanded =
+                                                false; // Collapse after selection
+                                          });
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? AppColors.colorForth
+                                                  : Colors.transparent,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                              'assets/avatars/$avatarName',
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
 
-                if (newName.isNotEmpty) {
-                  ref
-                      .read(profileProvider.notifier)
-                      .updateProfile(name: newName, bio: newBio);
-                }
-                Navigator.pop(context);
-              },
-              child: const Text(
-                'Save',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                      const SizedBox(height: 24),
+                      TextField(
+                        controller: nameController,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Name',
+                          labelStyle: const TextStyle(
+                            color: AppColors.darkTextSecondary,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppColors.darkBorder.withValues(
+                                alpha: 0.5,
+                              ),
+                            ),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: AppColors.colorFifth),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: bioController,
+                        maxLines: null,
+                        minLines: 1,
+                        style: const TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Bio',
+                          labelStyle: const TextStyle(
+                            color: AppColors.darkTextSecondary,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color: AppColors.darkBorder.withValues(
+                                alpha: 0.5,
+                              ),
+                            ),
+                          ),
+                          focusedBorder: const UnderlineInputBorder(
+                            borderSide: BorderSide(color: AppColors.colorFifth),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: AppColors.darkTextSecondary),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {
+                    final newName = nameController.text.trim();
+                    final newBio = bioController.text.trim();
+
+                    if (newName.isNotEmpty) {
+                      ref
+                          .read(profileProvider.notifier)
+                          .updateProfile(
+                            name: newName,
+                            bio: newBio,
+                            avatar: selectedAvatar,
+                          );
+                    }
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -212,11 +273,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                     onPressed: () {
                       profileState.whenData((user) {
+                        final avatar =
+                            user.avatar == null || user.avatar!.isEmpty
+                            ? 'avatar5.png'
+                            : user.avatar!;
                         _showEditProfileDialog(
                           context,
                           ref,
                           user.name,
                           user.bio,
+                          avatar,
                         );
                       });
                     },
@@ -249,60 +315,49 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       physics: const AlwaysScrollableScrollPhysics(),
                       children: [
                         // Avatar
-                        Center(
-                          child: Stack(
-                            children: [
-                              Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: AppColors.blue,
-                                    width: 3.5,
-                                  ),
+                        GestureDetector(
+                          onTap: profileState.isLoading
+                              ? null
+                              : () => profileState.whenData((user) {
+                                  final currentAvatar =
+                                      user.avatar == null ||
+                                          user.avatar!.isEmpty
+                                      ? 'avatar5.png'
+                                      : user.avatar!;
+                                  _showEditProfileDialog(
+                                    context,
+                                    ref,
+                                    user.name,
+                                    user.bio,
+                                    currentAvatar,
+                                  );
+                                }),
+                          child: Center(
+                            child: Container(
+                              width: 120,
+                              height: 120,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: AppColors.blue,
+                                  width: 3.5,
                                 ),
-                                child: profileState.isLoading
-                                    ? const Center(
-                                        child: CircularProgressIndicator(
-                                          color: AppColors.blue,
-                                        ),
-                                      )
-                                    : CircleAvatar(
-                                        radius: 60,
-                                        backgroundColor:
-                                            AppColors.darkBgSecondary,
-                                        backgroundImage: AssetImage(
-                                          'assets/avatars/$avatar',
-                                        ),
+                              ),
+                              child: profileState.isLoading
+                                  ? const Center(
+                                      child: CircularProgressIndicator(
+                                        color: AppColors.blue,
                                       ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                right: 0,
-                                child: GestureDetector(
-                                  onTap: profileState.isLoading
-                                      ? null
-                                      : () => _showAvatarPicker(
-                                          context,
-                                          ref,
-                                          avatar!,
-                                        ),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.blue,
-                                      shape: BoxShape.circle,
+                                    )
+                                  : CircleAvatar(
+                                      radius: 60,
+                                      backgroundColor:
+                                          AppColors.darkBgSecondary,
+                                      backgroundImage: AssetImage(
+                                        'assets/avatars/$avatar',
+                                      ),
                                     ),
-                                    child: const Icon(
-                                      Icons.edit,
-                                      color: AppColors.darkBgPrimary,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: AppSpacing.md),
