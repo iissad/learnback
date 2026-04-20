@@ -91,11 +91,17 @@ class AuthNotifier extends Notifier<AuthState> {
     required String name,
     required String email,
     required String password,
+    required String confirmPassword,
   }) async {
     log('Attempting registration for email: $email');
     state = const AuthState(status: AuthStatus.loading);
     try {
-      await _repo.register(name: name, email: email, password: password);
+      await _repo.register(
+        name: name,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
+      );
       log('Registration successful.');
       state = const AuthState(status: AuthStatus.registered);
     } on DioException catch (e) {

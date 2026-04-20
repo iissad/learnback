@@ -52,7 +52,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
     await ref
         .read(authProvider.notifier)
-        .register(name: name, email: email, password: password);
+        .register(
+          name: name,
+          email: email,
+          password: password,
+          confirmPassword: confirm,
+        );
   }
 
   @override

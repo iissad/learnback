@@ -73,13 +73,14 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  void _showEditFieldDialog(
+  void _showEditProfileDialog(
     BuildContext context,
     WidgetRef ref,
-    String field,
-    String currentValue,
+    String currentName,
+    String? currentBio,
   ) {
-    final controller = TextEditingController(text: currentValue);
+    final nameController = TextEditingController(text: currentName);
+    final bioController = TextEditingController(text: currentBio ?? '');
 
     showDialog(
       context: context,
@@ -89,30 +90,49 @@ class ProfileScreen extends ConsumerWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          title: Text(
-            'Edit $field',
-            style: AppTextStyles.headingSmall.copyWith(color: Colors.white),
-          ),
-          content: TextField(
-            controller: controller,
-            style: const TextStyle(color: Colors.white),
-            cursorColor: AppColors.colorFifth,
-            decoration: InputDecoration(
-              hintText: 'Enter your $field...',
-              hintStyle: TextStyle(
-                color: AppColors.darkTextSecondary.withValues(alpha: 0.8),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
-                  color: AppColors.darkBorder.withValues(alpha: 0.5),
+          title: const Text('Edit Profile', style: AppTextStyles.headingSmall),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  labelStyle: const TextStyle(
+                    color: AppColors.darkTextSecondary,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.darkBorder.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.colorFifth),
+                  ),
                 ),
               ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: AppColors.colorFifth),
+              const SizedBox(height: 16),
+              TextField(
+                controller: bioController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  labelText: 'Bio',
+                  labelStyle: const TextStyle(
+                    color: AppColors.darkTextSecondary,
+                  ),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(
+                      color: AppColors.darkBorder.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  focusedBorder: const UnderlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.colorFifth),
+                  ),
+                ),
+                maxLines: 3,
               ),
-            ),
+            ],
           ),
           actions: [
             TextButton(
@@ -124,28 +144,29 @@ class ProfileScreen extends ConsumerWidget {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.blue,
+                backgroundColor: AppColors.colorFifth,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               onPressed: () {
-                final newValue = controller.text.trim();
-                if (field == 'Name' && newValue.isEmpty)
-                  return; // Basic validation
+                final newName = nameController.text.trim();
+                final newBio = bioController.text.trim();
 
-                if (field == 'Name') {
+                if (newName.isNotEmpty) {
                   ref
                       .read(profileProvider.notifier)
-                      .updateProfile(name: newValue);
-                } else if (field == 'Bio') {
-                  ref
-                      .read(profileProvider.notifier)
-                      .updateProfile(bio: newValue);
+                      .updateProfile(name: newName, bio: newBio);
                 }
                 Navigator.pop(context);
               },
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         );
@@ -175,7 +196,23 @@ class ProfileScreen extends ConsumerWidget {
                 children: [
                   Image.asset('assets/icons/logo.png', width: 40, height: 40),
                   const Text('Profile', style: AppTextStyles.headingLarge),
-                  const Icon(Icons.more_vert, color: AppColors.blue, size: 28),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.more_vert,
+                      color: AppColors.blue,
+                      size: 28,
+                    ),
+                    onPressed: () {
+                      profileState.whenData((user) {
+                        _showEditProfileDialog(
+                          context,
+                          ref,
+                          user.name,
+                          user.bio,
+                        );
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
@@ -260,6 +297,41 @@ class ProfileScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
+                        const SizedBox(height: AppSpacing.md),
+
+                        // Name, Email, Bio
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                user.name,
+                                style: AppTextStyles.headingLarge,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                user.email,
+                                style: AppTextStyles.bodyMedium.copyWith(
+                                  color: AppColors.darkTextSecondary,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              if (user.bio != null && user.bio!.isNotEmpty) ...[
+                                const SizedBox(height: 12),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: AppSpacing.xl,
+                                  ),
+                                  child: Text(
+                                    user.bio!,
+                                    style: AppTextStyles.bodyLarge,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                         const SizedBox(height: AppSpacing.xl),
 
                         // Big points card
@@ -308,46 +380,6 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: AppSpacing.xl),
-
-                        const Text(
-                          'Personal Info',
-                          style: AppTextStyles.headingSmall,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-
-                        // Info Fields
-                        _buildProfileField(
-                          context,
-                          'Name',
-                          user.name,
-                          isEditable: true,
-                          onEdit: () => _showEditFieldDialog(
-                            context,
-                            ref,
-                            'Name',
-                            user.name,
-                          ),
-                        ),
-                        _buildProfileField(
-                          context,
-                          'Bio',
-                          user.bio ?? '',
-                          isEditable: true,
-                          onEdit: () => _showEditFieldDialog(
-                            context,
-                            ref,
-                            'Bio',
-                            user.bio ?? '',
-                          ),
-                        ),
-                        _buildProfileField(
-                          context,
-                          'Email',
-                          user.email,
-                          isEditable: false,
-                        ),
-
                         const SizedBox(height: AppSpacing.xxl),
                       ],
                     ),
@@ -462,59 +494,6 @@ class ProfileScreen extends ConsumerWidget {
               ),
             ),
           ],
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileField(
-    BuildContext context,
-    String label,
-    String value, {
-    bool isEditable = false,
-    VoidCallback? onEdit,
-  }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.darkBgSecondary,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  label,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColors.darkTextSecondary,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  value.isEmpty ? 'Not provided' : value,
-                  style: AppTextStyles.bodyLarge.copyWith(
-                    color: value.isEmpty
-                        ? AppColors.darkTextSecondary
-                        : Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (isEditable)
-            IconButton(
-              icon: const Icon(
-                Icons.edit,
-                color: AppColors.blueLight,
-                size: 20,
-              ),
-              onPressed: onEdit,
-            ),
         ],
       ),
     );

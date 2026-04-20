@@ -38,6 +38,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String name,
     required String email,
     required String password,
+    required String confirmPassword,
   }) async {
     final response = await _dio.post<Map<String, dynamic>>(
       'auth/register',
@@ -45,6 +46,7 @@ class AuthRepositoryImpl implements AuthRepository {
         'name': name,
         'email': email,
         'password': password,
+        'confirmPassword': confirmPassword,
         'role': "student",
       },
     );
