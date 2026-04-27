@@ -69,7 +69,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
           final isSubmitting = state.isSubmitting;
 
           final currentQuestion = test.questions[currentIndex];
-          final progress = (currentIndex + 1) / test.questions.length;
+          final progress = (currentIndex) / test.questions.length;
           final isLastQuestion = currentIndex == test.questions.length - 1;
 
           return SafeArea(
@@ -124,8 +124,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
                         color: AppColors.darkBgSecondary,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: ListView(
                         children: [
                           Text(
                             currentQuestion.question,
