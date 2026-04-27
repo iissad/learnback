@@ -3,6 +3,7 @@ import '../../domain/models/skill.dart';
 import '../../domain/models/user_skill.dart';
 import '../../domain/models/learning_goal.dart';
 import '../../domain/repositories/skills_repository.dart';
+import '../../../verification/domain/models/skill_test.dart';
 
 class SkillsRepositoryImpl implements SkillsRepository {
   final Dio _dio;
@@ -82,5 +83,27 @@ class SkillsRepositoryImpl implements SkillsRepository {
   @override
   Future<void> addLearningGoal(String skillId) async {
     await _dio.post('learninggoals/newgoal', data: {'skillId': skillId});
+  }
+
+  @override
+  Future<SkillTest> getSkillTest(String skillId) async {
+    final response = await _dio.get('tests/$skillId');
+    final responseBody = response.data as Map<String, dynamic>;
+    return SkillTest.fromJson(responseBody['data'] as Map<String, dynamic>);
+  }
+
+  @override
+  Future<QuizSubmissionResponse> submitSkillTest(
+    String testId,
+    List<String> answers,
+  ) async {
+    final response = await _dio.post(
+      'tests/$testId/take',
+      data: {'answers': answers},
+    );
+    final responseBody = response.data as Map<String, dynamic>;
+    return QuizSubmissionResponse.fromJson(
+      responseBody['data'] as Map<String, dynamic>,
+    );
   }
 }

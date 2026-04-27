@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learnback/app/theme/app_colors.dart';
 import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
@@ -202,6 +203,7 @@ class _EditMasteredSkillsScreenState
                                   userSkill.source == 'verified' ||
                                   userSkill.source == 'match-completion';
                               return _UserSkillTile(
+                                skillId: userSkill.skillId,
                                 name: skillName,
                                 level: userSkill.level,
                                 isVerified: isVerified,
@@ -320,11 +322,13 @@ class _EditMasteredSkillsScreenState
 
 class _UserSkillTile extends StatelessWidget {
   const _UserSkillTile({
+    required this.skillId,
     required this.name,
     required this.level,
     required this.isVerified,
   });
 
+  final String skillId;
   final String name;
   final String level;
   final bool isVerified;
@@ -370,7 +374,10 @@ class _UserSkillTile extends StatelessWidget {
               ],
             ),
           ),
-          if (isVerified) _VerifiedBadge() else _VerifyButton(),
+          if (isVerified)
+            _VerifiedBadge()
+          else
+            _VerifyButton(skillId: skillId, skillName: name),
         ],
       ),
     );
@@ -410,6 +417,11 @@ class _VerifiedBadge extends StatelessWidget {
 }
 
 class _VerifyButton extends StatelessWidget {
+  const _VerifyButton({required this.skillId, required this.skillName});
+
+  final String skillId;
+  final String skillName;
+
   @override
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
@@ -426,7 +438,11 @@ class _VerifyButton extends StatelessWidget {
         'Verify',
         style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
       ),
-      onPressed: null, // Future: navigate to verification quiz
+      onPressed: () {
+        context.push(
+          '/home/verify-skill/$skillId?name=${Uri.encodeComponent(skillName)}',
+        );
+      },
     );
   }
 }

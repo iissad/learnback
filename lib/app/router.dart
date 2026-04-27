@@ -11,6 +11,9 @@ import 'package:learnback/features/auth/presentation/providers/auth_provider.dar
 import 'package:learnback/features/home/presentation/screens/main_screen.dart';
 import 'package:learnback/features/skills/presentation/screens/edit_mastered_skills_screen.dart';
 import 'package:learnback/features/skills/presentation/screens/edit_learning_goals_screen.dart';
+import 'package:learnback/features/verification/presentation/screens/verification_quiz_screen.dart';
+import 'package:learnback/features/verification/presentation/screens/verification_result_screen.dart';
+import 'package:learnback/features/verification/domain/models/skill_test.dart';
 
 /// A simple [Listenable] used to notify GoRouter when the auth state changes
 /// without needing to rebuild the entire GoRouter instance.
@@ -79,6 +82,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home/learning-goals',
         builder: (context, state) => const EditLearningGoalsScreen(),
+      ),
+      GoRoute(
+        path: '/home/verify-skill/:skillId',
+        builder: (context, state) {
+          final skillId = state.pathParameters['skillId']!;
+          final skillName = state.uri.queryParameters['name'] ?? 'Skill';
+          return VerificationQuizScreen(skillId: skillId, skillName: skillName);
+        },
+      ),
+      GoRoute(
+        path: '/home/verify-result',
+        builder: (context, state) {
+          final result = state.extra as QuizSubmissionResponse;
+          return VerificationResultScreen(result: result);
+        },
       ),
     ],
   );
