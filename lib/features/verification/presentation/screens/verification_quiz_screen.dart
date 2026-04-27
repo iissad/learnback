@@ -19,7 +19,10 @@ class VerificationQuizScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProviderScope(
-      overrides: [currentSkillIdProvider.overrideWithValue(skillId)],
+      overrides: [
+        currentSkillIdProvider.overrideWithValue(skillId),
+        verificationQuizProvider.overrideWith(VerificationQuizNotifier.new),
+      ],
       child: _VerificationQuizScreenContent(skillName: skillName),
     );
   }
