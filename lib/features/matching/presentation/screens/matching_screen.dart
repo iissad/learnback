@@ -3,6 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:learnback/app/theme/app_colors.dart';
 import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
+import '../widgets/popular_skills_section.dart';
+import '../widgets/category_section.dart';
 
 class MatchingScreen extends StatelessWidget {
   const MatchingScreen({super.key});
@@ -12,21 +14,27 @@ class MatchingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBgPrimary,
       body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Column(
-                children: [
-                  const SizedBox(height: AppSpacing.md),
-                  _buildTopBar(),
-                  const SizedBox(height: AppSpacing.lg),
-                  _buildSearchBar(),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                child: Column(
+                  children: [
+                    const SizedBox(height: AppSpacing.md),
+                    _buildTopBar(),
+                    const SizedBox(height: AppSpacing.lg),
+                    _buildSearchBar(),
+                  ],
+                ),
               ),
-            ),
-            // other elements will be added later
-          ],
+              const SizedBox(height: AppSpacing.xl),
+              const PopularSkillsSection(),
+              const SizedBox(height: AppSpacing.xl),
+              const CategorySection(),
+              const SizedBox(height: AppSpacing.xxl),
+            ],
+          ),
         ),
       ),
     );

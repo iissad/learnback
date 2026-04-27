@@ -9,16 +9,18 @@ class GradientButton extends StatelessWidget {
     required this.label,
     required this.onPressed,
     this.isLoading = false,
+    this.height,
   });
 
   final String label;
   final VoidCallback? onPressed;
   final bool isLoading;
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 52,
+      height: height ?? 52,
       width: double.infinity,
       child: DecoratedBox(
         decoration: BoxDecoration(
