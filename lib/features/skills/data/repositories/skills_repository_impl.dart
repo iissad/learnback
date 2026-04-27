@@ -73,11 +73,14 @@ class SkillsRepositoryImpl implements SkillsRepository {
 
   @override
   Future<void> addUserSkill(String skillId, String level) async {
-    await _dio.post('users/skills', data: {'skillId': skillId, 'level': level});
+    await _dio.post(
+      'users/addskill',
+      data: {'skillId': skillId, 'level': level},
+    );
   }
 
   @override
   Future<void> addLearningGoal(String skillId) async {
-    await _dio.post('learninggoals/usergoal', data: {'skillId': skillId});
+    await _dio.post('learninggoals/newgoal', data: {'skillId': skillId});
   }
 }
