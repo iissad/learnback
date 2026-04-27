@@ -51,26 +51,43 @@ class PopularSkillsSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        SizedBox(
-          height: 180,
-          child: popularSkillsAsync.when(
-            data: (skills) {
-              if (skills.isEmpty) {
-                return const Center(child: Text('No popular skills found'));
-              }
-              return ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                scrollDirection: Axis.horizontal,
-                itemCount: skills.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 16),
-                itemBuilder: (context, index) {
-                  return _PopularSkillCard(skill: skills[index]);
-                },
+        popularSkillsAsync.when(
+          data: (skills) {
+            if (skills.length < 2) {
+              return const SizedBox(
+                height: 180,
+                child: Center(child: Text('Not enough popular skills')),
               );
-            },
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (e, _) => Center(child: Text('Error: $e')),
+            }
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _PopularSkillCard(
+                      skill: skills[0],
+                      backgroundImage: 'assets/images/development_bg.png',
+                      icon: Icons.code_rounded,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _PopularSkillCard(
+                      skill: skills[1],
+                      backgroundImage: 'assets/images/design_bg.png',
+                      icon: Icons.palette_rounded,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          loading: () => const SizedBox(
+            height: 180,
+            child: Center(child: CircularProgressIndicator()),
           ),
+          error: (e, _) =>
+              SizedBox(height: 180, child: Center(child: Text('Error: $e'))),
         ),
       ],
     );
@@ -78,27 +95,25 @@ class PopularSkillsSection extends ConsumerWidget {
 }
 
 class _PopularSkillCard extends StatelessWidget {
-  const _PopularSkillCard({required this.skill});
+  const _PopularSkillCard({
+    required this.skill,
+    required this.backgroundImage,
+    required this.icon,
+  });
+
   final Skill skill;
+  final String backgroundImage;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
-    // Generate a background based on category or name
-    final isDevelopment =
-        skill.category?.toLowerCase() == 'development' ||
-        skill.name.toLowerCase().contains('dev');
-
     return Container(
-      width: 170, // Fixed width for matching screenshot look
+      height: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.darkBorder.withValues(alpha: 0.3)),
         image: DecorationImage(
-          image: NetworkImage(
-            isDevelopment
-                ? 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400'
-                : 'https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=400',
-          ),
+          image: AssetImage(backgroundImage),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
             Colors.black.withValues(alpha: 0.5),
@@ -115,11 +130,7 @@ class _PopularSkillCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  isDevelopment ? Icons.code_rounded : Icons.palette_rounded,
-                  color: AppColors.cyan,
-                  size: 24,
-                ),
+                Icon(icon, color: AppColors.cyan, size: 24),
                 const SizedBox(height: 4),
                 Text(
                   skill.name.toUpperCase(),
