@@ -9,6 +9,8 @@ import 'package:learnback/features/auth/presentation/screens/register_screen.dar
 import 'package:learnback/features/auth/presentation/screens/confirm_email_screen.dart';
 import 'package:learnback/features/auth/presentation/providers/auth_provider.dart';
 import 'package:learnback/features/home/presentation/screens/main_screen.dart';
+import 'package:learnback/features/skills/presentation/screens/edit_mastered_skills_screen.dart';
+import 'package:learnback/features/skills/presentation/screens/edit_learning_goals_screen.dart';
 
 /// A simple [Listenable] used to notify GoRouter when the auth state changes
 /// without needing to rebuild the entire GoRouter instance.
@@ -70,6 +72,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ConfirmEmailScreen(),
       ),
       GoRoute(path: '/home', builder: (context, state) => const MainScreen()),
+      GoRoute(
+        path: '/home/mastered-skills',
+        builder: (context, state) => const EditMasteredSkillsScreen(),
+      ),
+      GoRoute(
+        path: '/home/learning-goals',
+        builder: (context, state) => const EditLearningGoalsScreen(),
+      ),
     ],
   );
 });

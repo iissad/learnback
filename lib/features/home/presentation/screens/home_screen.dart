@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learnback/app/theme/app_colors.dart';
 import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
@@ -147,40 +148,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Row(
                           children: [
                             Expanded(
-                              child: userGoalsAsync.when(
-                                data: (goals) => _buildStatCard(
-                                  'Learning Goals',
-                                  goals.length.toString(),
-                                  subtitle: goals.isEmpty
-                                      ? 'Set some goals!'
-                                      : null,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    context.push('/home/learning-goals'),
+                                child: userGoalsAsync.when(
+                                  data: (goals) => _buildStatCard(
+                                    'Learning Goals',
+                                    goals.length.toString(),
+                                    subtitle: goals.isEmpty
+                                        ? 'Set some goals!'
+                                        : null,
+                                    tappable: true,
+                                  ),
+                                  loading: () => _buildStatCard(
+                                    'Learning Goals',
+                                    '...',
+                                    isLoading: true,
+                                  ),
+                                  error: (err, stack) =>
+                                      _buildStatCard('Learning Goals', '0'),
                                 ),
-                                loading: () => _buildStatCard(
-                                  'Learning Goals',
-                                  '...',
-                                  isLoading: true,
-                                ),
-                                error: (err, stack) =>
-                                    _buildStatCard('Learning Goals', '0'),
                               ),
                             ),
                             const SizedBox(width: AppSpacing.md),
                             Expanded(
-                              child: userSkillsAsync.when(
-                                data: (skills) => _buildStatCard(
-                                  'Mastered Skills',
-                                  skills.length.toString(),
-                                  subtitle: skills.isEmpty
-                                      ? 'Start learning!'
-                                      : null,
+                              child: GestureDetector(
+                                onTap: () =>
+                                    context.push('/home/mastered-skills'),
+                                child: userSkillsAsync.when(
+                                  data: (skills) => _buildStatCard(
+                                    'Mastered Skills',
+                                    skills.length.toString(),
+                                    subtitle: skills.isEmpty
+                                        ? 'Start learning!'
+                                        : null,
+                                    tappable: true,
+                                  ),
+                                  loading: () => _buildStatCard(
+                                    'Mastered Skills',
+                                    '...',
+                                    isLoading: true,
+                                  ),
+                                  error: (err, stack) =>
+                                      _buildStatCard('Mastered Skills', '0'),
                                 ),
-                                loading: () => _buildStatCard(
-                                  'Mastered Skills',
-                                  '...',
-                                  isLoading: true,
-                                ),
-                                error: (err, stack) =>
-                                    _buildStatCard('Mastered Skills', '0'),
                               ),
                             ),
                           ],
@@ -355,6 +366,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     String value, {
     String? subtitle,
     bool isLoading = false,
+    bool tappable = false,
   }) {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.md),
@@ -365,11 +377,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.darkTextSecondary,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.darkTextSecondary,
+                ),
+              ),
+              if (tappable)
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  color: AppColors.colorFifth,
+                  size: 16,
+                ),
+            ],
           ),
           const SizedBox(height: 4),
           Text(

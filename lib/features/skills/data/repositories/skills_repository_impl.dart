@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../../domain/models/skill.dart';
 import '../../domain/models/user_skill.dart';
 import '../../domain/models/learning_goal.dart';
 import '../../domain/repositories/skills_repository.dart';
@@ -49,5 +50,34 @@ class SkillsRepositoryImpl implements SkillsRepository {
         'createdAt': m['createdAt'] ?? DateTime.now().toIso8601String(),
       });
     }).toList();
+  }
+
+  @override
+  Future<List<Skill>> getAllSkills() async {
+    final response = await _dio.get('skills/list');
+    // Using default mapping as the structure might be `{ data: [...] }` or `[...]`.
+    final responseBody = response.data;
+    final List data = responseBody is Map
+        ? responseBody['data'] as List
+        : responseBody as List;
+    return data.map((e) {
+      final m = e as Map<String, dynamic>;
+      return Skill.fromJson({
+        'id': m['_id'] ?? m['id'] ?? '',
+        'name': m['name'] ?? '',
+        'description': m['description'],
+        'category': m['category'],
+      });
+    }).toList();
+  }
+
+  @override
+  Future<void> addUserSkill(String skillId, String level) async {
+    await _dio.post('users/skills', data: {'skillId': skillId, 'level': level});
+  }
+
+  @override
+  Future<void> addLearningGoal(String skillId) async {
+    await _dio.post('learninggoals/usergoal', data: {'skillId': skillId});
   }
 }

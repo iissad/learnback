@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learnback/core/providers/common_providers.dart';
 import '../../data/repositories/skills_repository_impl.dart';
 import '../../domain/repositories/skills_repository.dart';
+import '../../domain/models/skill.dart';
 import '../../domain/models/user_skill.dart';
 import '../../domain/models/learning_goal.dart';
 
@@ -17,4 +18,9 @@ final userSkillsProvider = FutureProvider<List<UserSkill>>((ref) async {
 final userGoalsProvider = FutureProvider<List<LearningGoal>>((ref) async {
   final repo = ref.watch(skillsRepositoryProvider);
   return repo.getUserGoals();
+});
+
+final allSkillsProvider = FutureProvider<List<Skill>>((ref) async {
+  final repo = ref.watch(skillsRepositoryProvider);
+  return repo.getAllSkills();
 });
