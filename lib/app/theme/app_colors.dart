@@ -19,8 +19,6 @@ abstract class AppColors {
   static const Color lightTextMuted = Color(0xFF9AA6B2);
 
   // ── Accent ─────────────────────────────────────────────────────────
-  static const Color cyan = Color(0xFF00F2FE); // gradient start / links
-  static const Color colorFifth = cyan;
   static const Color purple = Color(0xFF7367F0); // gradient end
   static const Color colorSixth = purple;
   static const Color blue = Color(0xFF4988C4);
@@ -36,7 +34,7 @@ abstract class AppColors {
 
   // ── Gradient ───────────────────────────────────────────────────────
   static const LinearGradient ctaGradient = LinearGradient(
-    colors: [cyan, purple],
+    colors: [blueLight, purple],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );

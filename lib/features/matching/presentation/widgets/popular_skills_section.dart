@@ -130,12 +130,12 @@ class _PopularSkillCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, color: AppColors.cyan, size: 24),
+                Icon(icon, color: AppColors.blueLight, size: 24),
                 const SizedBox(height: 4),
                 Text(
                   skill.name.toUpperCase(),
                   style: AppTextStyles.headingSmall.copyWith(
-                    color: AppColors.cyan,
+                    color: AppColors.blueLight,
                     fontSize: 14,
                   ),
                 ),

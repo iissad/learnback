@@ -58,7 +58,7 @@ class _EditMasteredSkillsScreenState
                     title: Text(level, style: AppTextStyles.bodyLarge),
                     trailing: const Icon(
                       Icons.chevron_right,
-                      color: AppColors.colorFifth,
+                      color: AppColors.blueLight,
                     ),
                     onTap: () => Navigator.pop(ctx, level),
                   ),
@@ -128,7 +128,7 @@ class _EditMasteredSkillsScreenState
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.colorFifth,
+            color: AppColors.blueLight,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -137,7 +137,7 @@ class _EditMasteredSkillsScreenState
       ),
       body: allSkillsAsync.when(
         loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.colorFifth),
+          child: CircularProgressIndicator(color: AppColors.blueLight),
         ),
         error: (e, _) => Center(
           child: Text('Error loading skills', style: AppTextStyles.errorText),
@@ -145,7 +145,7 @@ class _EditMasteredSkillsScreenState
         data: (allSkills) {
           return userSkillsAsync.when(
             loading: () => const Center(
-              child: CircularProgressIndicator(color: AppColors.colorFifth),
+              child: CircularProgressIndicator(color: AppColors.blueLight),
             ),
             error: (e, _) => Center(
               child: Text(
@@ -346,7 +346,7 @@ class _UserSkillTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isVerified
-              ? AppColors.colorFifth.withValues(alpha: 0.35)
+              ? AppColors.blueLight.withValues(alpha: 0.35)
               : AppColors.darkBorder.withValues(alpha: 0.3),
           width: 1,
         ),
@@ -390,23 +390,23 @@ class _VerifiedBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: AppColors.colorFifth.withValues(alpha: 0.12),
+        color: AppColors.blueLight.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.colorFifth.withValues(alpha: 0.5)),
+        border: Border.all(color: AppColors.blueLight.withValues(alpha: 0.5)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const Icon(
             Icons.verified_rounded,
-            color: AppColors.colorFifth,
+            color: AppColors.blueLight,
             size: 14,
           ),
           const SizedBox(width: 4),
           Text(
             'Verified',
             style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.colorFifth,
+              color: AppColors.blueLight,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -426,8 +426,8 @@ class _VerifyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       style: OutlinedButton.styleFrom(
-        side: const BorderSide(color: AppColors.colorFifth, width: 1),
-        foregroundColor: AppColors.colorFifth,
+        side: const BorderSide(color: AppColors.blueLight, width: 1),
+        foregroundColor: AppColors.blueLight,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -473,12 +473,12 @@ class _AvailableSkillTile extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.colorFifth.withValues(alpha: 0.08)
+              ? AppColors.blueLight.withValues(alpha: 0.08)
               : AppColors.darkBgSecondary,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected
-                ? AppColors.colorFifth.withValues(alpha: 0.6)
+                ? AppColors.blueLight.withValues(alpha: 0.6)
                 : AppColors.darkBorder.withValues(alpha: 0.25),
             width: isSelected ? 1.5 : 1,
           ),
@@ -492,7 +492,7 @@ class _AvailableSkillTile extends StatelessWidget {
                   Text(
                     skill.name,
                     style: AppTextStyles.bodyLarge.copyWith(
-                      color: isSelected ? AppColors.colorFifth : Colors.white,
+                      color: isSelected ? AppColors.blueLight : Colors.white,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -501,7 +501,7 @@ class _AvailableSkillTile extends StatelessWidget {
                     Text(
                       selectedLevel!,
                       style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.colorFifth,
+                        color: AppColors.blueLight,
                       ),
                     ),
                   ] else if (skill.description != null &&
@@ -526,7 +526,7 @@ class _AvailableSkillTile extends StatelessWidget {
                   ? const Icon(
                       Icons.check_circle_rounded,
                       key: ValueKey('checked'),
-                      color: AppColors.colorFifth,
+                      color: AppColors.blueLight,
                     )
                   : Icon(
                       Icons.add_circle_outline_rounded,
@@ -566,7 +566,7 @@ class _GradientSaveButton extends StatelessWidget {
               ? []
               : [
                   BoxShadow(
-                    color: AppColors.colorFifth.withValues(alpha: 0.25),
+                    color: AppColors.blueLight.withValues(alpha: 0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -579,7 +579,7 @@ class _GradientSaveButton extends StatelessWidget {
                   height: 22,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.colorFifth,
+                    color: AppColors.blueLight,
                   ),
                 )
               : Text(label, style: AppTextStyles.labelButton),

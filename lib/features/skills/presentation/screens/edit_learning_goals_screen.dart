@@ -74,7 +74,7 @@ class _EditLearningGoalsScreenState
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.colorFifth,
+            color: AppColors.blueLight,
           ),
           onPressed: () => Navigator.pop(context),
         ),
@@ -83,7 +83,7 @@ class _EditLearningGoalsScreenState
       ),
       body: allSkillsAsync.when(
         loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.colorFifth),
+          child: CircularProgressIndicator(color: AppColors.blueLight),
         ),
         error: (e, _) => Center(
           child: Text('Error loading skills', style: AppTextStyles.errorText),
@@ -91,7 +91,7 @@ class _EditLearningGoalsScreenState
         data: (allSkills) {
           return userGoalsAsync.when(
             loading: () => const Center(
-              child: CircularProgressIndicator(color: AppColors.colorFifth),
+              child: CircularProgressIndicator(color: AppColors.blueLight),
             ),
             error: (e, _) => Center(
               child: Text(
@@ -413,7 +413,7 @@ class _GradientSaveButton extends StatelessWidget {
               ? []
               : [
                   BoxShadow(
-                    color: AppColors.colorFifth.withValues(alpha: 0.25),
+                    color: AppColors.blueLight.withValues(alpha: 0.25),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),
@@ -426,7 +426,7 @@ class _GradientSaveButton extends StatelessWidget {
                   height: 22,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: AppColors.colorFifth,
+                    color: AppColors.blueLight,
                   ),
                 )
               : Text(label, style: AppTextStyles.labelButton),

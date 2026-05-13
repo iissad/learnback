@@ -66,7 +66,7 @@ abstract class AppTextStyles {
     fontFamily: _font,
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    color: AppColors.cyan,
+    color: AppColors.blueLight,
   );
 
   static const TextStyle errorText = TextStyle(

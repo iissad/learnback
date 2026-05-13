@@ -167,7 +167,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                           ),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.colorFifth),
+                            borderSide: BorderSide(color: AppColors.blueLight),
                           ),
                         ),
                       ),
@@ -190,7 +190,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             ),
                           ),
                           focusedBorder: const UnderlineInputBorder(
-                            borderSide: BorderSide(color: AppColors.colorFifth),
+                            borderSide: BorderSide(color: AppColors.blueLight),
                           ),
                         ),
                       ),
@@ -301,7 +301,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       : user.avatar;
 
                   return RefreshIndicator(
-                    color: AppColors.colorFifth,
+                    color: AppColors.blueLight,
                     backgroundColor: AppColors.darkBgSecondary,
                     onRefresh: () async {
                       ref.invalidate(profileProvider);
@@ -465,8 +465,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               TabBar(
                                 isScrollable: true,
                                 tabAlignment: TabAlignment.start,
-                                indicatorColor: AppColors.colorFifth,
-                                labelColor: AppColors.colorFifth,
+                                indicatorColor: AppColors.blueLight,
+                                labelColor: AppColors.blueLight,
                                 unselectedLabelColor:
                                     AppColors.darkTextSecondary,
                                 dividerColor: Colors.transparent,
@@ -517,7 +517,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                             vertical: 20,
                                           ),
                                           child: CircularProgressIndicator(
-                                            color: AppColors.colorFifth,
+                                            color: AppColors.blueLight,
                                           ),
                                         ),
                                       ),
@@ -552,7 +552,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   );
                 },
                 loading: () => const Center(
-                  child: CircularProgressIndicator(color: AppColors.colorFifth),
+                  child: CircularProgressIndicator(color: AppColors.blueLight),
                 ),
                 error: (e, _) => Center(
                   child: Text(
@@ -577,7 +577,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       ),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.colorFifth, AppColors.colorSixth],
+          colors: [AppColors.blueLight, AppColors.colorSixth],
           begin: Alignment.bottomRight,
           end: Alignment.topLeft,
         ),
@@ -647,7 +647,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               if (tappable)
                 const Icon(
                   Icons.chevron_right_rounded,
-                  color: AppColors.colorFifth,
+                  color: AppColors.blueLight,
                   size: 16,
                 ),
             ],

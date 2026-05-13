@@ -85,7 +85,10 @@ class _SkillListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right_rounded, color: AppColors.cyan),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AppColors.blueLight,
+              ),
             ],
           ),
           const SizedBox(height: 16),

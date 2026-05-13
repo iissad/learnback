@@ -389,7 +389,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               if (tappable)
                 const Icon(
                   Icons.chevron_right_rounded,
-                  color: AppColors.colorFifth,
+                  color: AppColors.blueLight,
                   size: 16,
                 ),
             ],

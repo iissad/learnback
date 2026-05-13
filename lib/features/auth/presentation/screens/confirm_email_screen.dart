@@ -55,7 +55,7 @@ class ConfirmEmailScreen extends StatelessWidget {
                       width: 50,
                       height: 50,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.cyan,
+                        AppColors.blueLight,
                         BlendMode.srcIn,
                       ),
                     ),

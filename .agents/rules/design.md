@@ -14,7 +14,7 @@ trigger: always_on
 |---|---|---|---|
 | 1 | `#0A192F` | `darkBgPrimary` | Main screen background |
 | 2 | `#8892B0` | `darkTextSecondary` | Subtitles, helper text |
-| 3 | `#00F2FE` | `colorFifth` / cyan | Icons, links, active states, gradient start |
+| 3 | `#00F2FE` | `blueLight` / blueLight | Icons, links, active states, gradient start |
 | 4 | `#7367F0` | `colorSixth` / purple | Gradient end, secondary accent |
 | 5 | `#4988C4` | `colorThird` | Interactive blue elements |
 | 6 | `#1E293B` | `darkBgSecondary` | Cards, input fields, surfaces |
@@ -28,13 +28,13 @@ trigger: always_on
 | 2 | `#0A192F` | `lightTextPrimary` | Primary text |
 | 3 | `#112240` | `lightTextSecondary` | Secondary text |
 | 4 | `#7367F0` | `lightIcon` | Purple accent, icons |
-| 5 | `#00F2FE` | `lightLink` | Cyan accent, links |
+| 5 | `#00F2FE` | `lightLink` | blueLight accent, links |
 | 6 | `#BCCCDC` | `lightBorder` | Borders, dividers |
 | 7 | `#9AA6B2` | `lightTextMuted` | Placeholders, disabled |
 
 ### Gradient (CTA Buttons)
 ```
-#00F2FE → #7367F0  (cyan to purple, left to right)
+#00F2FE → #7367F0  (blueLight to purple, left to right)
 ```
 Applied to: "Get started", "Next", "Log In", "Resend email"
 
@@ -63,7 +63,7 @@ warning: #FFB84D
 | `bodyMedium` | 14px | 400 | Subtitles, descriptions |
 | `bodySmall` | 12px | 400 | Taglines, helper text |
 | `labelButton` | 16px | 600 | Button labels (white) |
-| `labelLink` | 14px | 400 | Text links (cyan #00F2FE) |
+| `labelLink` | 14px | 400 | Text links (blueLight #00F2FE) |
 | `errorText` | 12px | 400 | Inline errors (red #FF4D6A) |
 
 ---

@@ -45,7 +45,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: AppColors.colorFifth,
+            color: AppColors.blueLight,
           ),
           onPressed: () => context.pop(),
         ),
@@ -54,7 +54,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
       ),
       body: quizAsync.when(
         loading: () => const Center(
-          child: CircularProgressIndicator(color: AppColors.colorFifth),
+          child: CircularProgressIndicator(color: AppColors.blueLight),
         ),
         error: (err, stack) => Center(
           child: Text(
@@ -82,7 +82,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
                     child: Text(
                       skillName,
                       style: AppTextStyles.headingMedium.copyWith(
-                        color: AppColors.colorFifth,
+                        color: AppColors.blueLight,
                       ),
                     ),
                   ),
@@ -100,7 +100,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
                       Text(
                         '${(progress * 100).round()}% completed',
                         style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColors.colorFifth,
+                          color: AppColors.blueLight,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -111,7 +111,7 @@ class _VerificationQuizScreenContent extends ConsumerWidget {
                     value: progress,
                     backgroundColor: AppColors.darkBgSecondary,
                     valueColor: const AlwaysStoppedAnimation(
-                      AppColors.colorFifth,
+                      AppColors.blueLight,
                     ),
                     minHeight: 8,
                     borderRadius: BorderRadius.circular(4),
@@ -233,11 +233,11 @@ class _OptionTile extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.colorFifth.withOpacity(0.1)
+              ? AppColors.blueLight.withOpacity(0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.colorFifth : AppColors.darkBorder,
+            color: isSelected ? AppColors.blueLight : AppColors.darkBorder,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -248,7 +248,7 @@ class _OptionTile extends StatelessWidget {
               height: 32,
               decoration: BoxDecoration(
                 color: isSelected
-                    ? AppColors.colorFifth
+                    ? AppColors.blueLight
                     : AppColors.darkBgPrimary,
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -257,7 +257,7 @@ class _OptionTile extends StatelessWidget {
                   letter,
                   style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isSelected ? Colors.white : AppColors.colorFifth,
+                    color: isSelected ? Colors.white : AppColors.blueLight,
                   ),
                 ),
               ),
@@ -297,7 +297,7 @@ class _ActionButton extends StatelessWidget {
       height: 52,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.colorFifth, AppColors.colorSixth],
+          colors: [AppColors.blueLight, AppColors.colorSixth],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
