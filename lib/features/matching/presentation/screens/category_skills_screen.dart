@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:learnback/app/theme/app_colors.dart';
 import 'package:learnback/app/theme/app_text_styles.dart';
 import 'package:learnback/core/constants/app_spacing.dart';
 import 'package:learnback/shared/widgets/gradient_button.dart';
 import '../../../skills/domain/models/skill.dart';
 import '../providers/matching_provider.dart';
+import '../providers/find_match_provider.dart';
 
 class CategorySkillsScreen extends ConsumerWidget {
   const CategorySkillsScreen({super.key, required this.category});
@@ -15,6 +17,34 @@ class CategorySkillsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final categoriesAsync = ref.watch(skillCategoriesProvider);
+
+    // Listen for match results to navigate or show errors
+    ref.listen(findMatchProvider, (previous, next) {
+      next.when(
+        data: (match) {
+          if (match != null) {
+            context.push(
+              '/matching/match-profile/${match.matchId}',
+              extra: match,
+            );
+            // Reset the provider after navigation to avoid re-triggering
+            ref.read(findMatchProvider.notifier).reset();
+          }
+        },
+        error: (e, _) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: $e'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        loading: () {
+          // You could show a global overlay here if needed
+        },
+      );
+    });
 
     return Scaffold(
       backgroundColor: AppColors.darkBgPrimary,
@@ -45,11 +75,11 @@ class CategorySkillsScreen extends ConsumerWidget {
   }
 }
 
-class _SkillListItem extends StatelessWidget {
+class _SkillListItem extends ConsumerWidget {
   const _SkillListItem({required this.skill});
   final Skill skill;
 
-  void _showMatchAction(BuildContext context) {
+  void _showMatchAction(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -108,7 +138,9 @@ class _SkillListItem extends StatelessWidget {
                 label: 'Get Matched Now',
                 onPressed: () {
                   Navigator.pop(context);
-                  // TODO: Implement matching flow via provider
+
+                  ref.read(findMatchProvider.notifier).findMatch(skill.id);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
@@ -142,13 +174,13 @@ class _SkillListItem extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () => _showMatchAction(context),
+          onTap: () => _showMatchAction(context, ref),
           borderRadius: BorderRadius.circular(16),
           child: Container(
             padding: const EdgeInsets.all(AppSpacing.lg),

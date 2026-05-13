@@ -14,7 +14,9 @@ import 'package:learnback/features/skills/presentation/screens/edit_learning_goa
 import 'package:learnback/features/verification/presentation/screens/verification_quiz_screen.dart';
 import 'package:learnback/features/verification/presentation/screens/verification_result_screen.dart';
 import 'package:learnback/features/verification/domain/models/skill_test.dart';
+import 'package:learnback/features/matching/domain/models/match_result.dart';
 import 'package:learnback/features/matching/presentation/screens/category_skills_screen.dart';
+import 'package:learnback/features/matching/presentation/screens/match_profile_screen.dart';
 
 /// A simple [Listenable] used to notify GoRouter when the auth state changes
 /// without needing to rebuild the entire GoRouter instance.
@@ -104,6 +106,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) {
           final category = state.pathParameters['category']!;
           return CategorySkillsScreen(category: category);
+        },
+      ),
+      GoRoute(
+        path: '/matching/match-profile/:matchId',
+        builder: (context, state) {
+          final match = state.extra as MatchResult;
+          return MatchProfileScreen(match: match);
         },
       ),
     ],
