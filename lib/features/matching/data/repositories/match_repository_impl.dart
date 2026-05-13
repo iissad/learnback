@@ -18,17 +18,18 @@ class MatchRepositoryImpl implements MatchRepository {
 
       final dynamic data = response.data['data'];
 
-      // Mapping the response to MatchResult.
-      // The API returns userBId, teachSkillAId, teachSkillBId etc.
-      // We map them to our domestic model.
+      final userB = data['userBId'] as Map<String, dynamic>;
+      final skillA = data['teachSkillAId'] as Map<String, dynamic>;
+      final skillB = data['teachSkillBId'] as Map<String, dynamic>;
+      final profileB = userB['profile'] as Map<String, dynamic>?;
+
       return MatchResult.fromJson({
         'matchId': data['_id'] ?? data['id'] ?? '',
-        'peerId': data['userBId'] ?? '',
-        'peerName':
-            data['peerName'] ??
-            'Matching Peer', // peerName might not be in the direct find response, but usually backend populates or we might need another call. In this context, we assume it's there or we provide a default.
-        'skillYouTeach': data['teachSkillAId'] ?? '',
-        'skillYouLearn': data['teachSkillBId'] ?? '',
+        'peerId': userB['_id'] ?? userB['id'] ?? '',
+        'peerName': userB['name'] ?? 'Matching Peer',
+        'peerAvatar': profileB?['avatar'],
+        'skillYouTeach': skillA['name'] ?? '',
+        'skillYouLearn': skillB['name'] ?? '',
         'status': data['status'] ?? 'pending',
       });
     } on DioException catch (e) {

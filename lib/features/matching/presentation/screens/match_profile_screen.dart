@@ -102,10 +102,11 @@ class MatchProfileScreen extends ConsumerWidget {
           ),
           child: CircleAvatar(
             radius: 60,
-            backgroundImage: match.peerAvatar != null
-                ? NetworkImage(match.peerAvatar!)
+            backgroundImage:
+                match.peerAvatar != null && match.peerAvatar!.isNotEmpty
+                ? AssetImage('assets/avatars/${match.peerAvatar}')
                 : null,
-            child: match.peerAvatar == null
+            child: (match.peerAvatar == null || match.peerAvatar!.isEmpty)
                 ? Text(
                     match.peerName.characters.first.toUpperCase(),
                     style: AppTextStyles.displayLarge,
