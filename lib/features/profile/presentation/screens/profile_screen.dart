@@ -8,6 +8,7 @@ import 'package:learnback/features/profile/presentation/providers/profile_provid
 import 'package:learnback/features/skills/presentation/providers/skills_provider.dart';
 import 'package:learnback/features/courses/presentation/providers/courses_provider.dart';
 import 'package:learnback/features/courses/domain/models/course.dart';
+import 'package:learnback/features/auth/presentation/providers/auth_provider.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -18,6 +19,53 @@ class ProfileScreen extends ConsumerStatefulWidget {
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   int _activeTabIndex = 0;
+
+  void _showLogoutConfirmationDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: AppColors.darkBgSecondary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text('Logout', style: AppTextStyles.headingSmall),
+          content: const Text(
+            'Are you sure you want to log out?',
+            style: AppTextStyles.bodyMedium,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(color: AppColors.darkTextSecondary),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.error,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                ref.read(authProvider.notifier).logout();
+              },
+              child: const Text(
+                'Logout',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _showEditProfileDialog(
     BuildContext context,
@@ -289,27 +337,52 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 children: [
                   Image.asset('assets/icons/logo.png', width: 40, height: 40),
                   const Text('Profile', style: AppTextStyles.headingLarge),
-                  IconButton(
+                  PopupMenuButton<String>(
                     icon: const Icon(
                       Icons.more_vert,
                       color: AppColors.blue,
                       size: 28,
                     ),
-                    onPressed: () {
-                      profileState.whenData((user) {
-                        final avatar =
-                            user.avatar == null || user.avatar!.isEmpty
-                            ? 'avatar5.png'
-                            : user.avatar!;
-                        _showEditProfileDialog(
-                          context,
-                          ref,
-                          user.name,
-                          user.bio,
-                          avatar,
-                        );
-                      });
+                    color: AppColors.darkBgSecondary,
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        profileState.whenData((user) {
+                          final avatar =
+                              user.avatar == null || user.avatar!.isEmpty
+                              ? 'avatar5.png'
+                              : user.avatar!;
+                          _showEditProfileDialog(
+                            context,
+                            ref,
+                            user.name,
+                            user.bio,
+                            avatar,
+                          );
+                        });
+                      } else if (value == 'logout') {
+                        _showLogoutConfirmationDialog(context, ref);
+                      }
                     },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(
+                        value: 'edit',
+                        child: Text(
+                          'Edit Profile',
+                          style: AppTextStyles.bodyMedium,
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: 'logout',
+                        child: Text(
+                          'Logout',
+                          style: TextStyle(
+                            color: AppColors.error,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
