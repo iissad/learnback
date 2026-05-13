@@ -14,27 +14,33 @@ class MatchingScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppColors.darkBgPrimary,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              child: Column(
+                children: [
+                  const SizedBox(height: AppSpacing.md),
+                  _buildTopBar(),
+                  const SizedBox(height: AppSpacing.lg),
+                  _buildSearchBar(),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.xl),
+            const Expanded(
+              child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    const SizedBox(height: AppSpacing.md),
-                    _buildTopBar(),
-                    const SizedBox(height: AppSpacing.lg),
-                    _buildSearchBar(),
+                    PopularSkillsSection(),
+                    const SizedBox(height: AppSpacing.xl),
+                    CategorySection(),
+                    const SizedBox(height: AppSpacing.xxl),
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.xl),
-              const PopularSkillsSection(),
-              const SizedBox(height: AppSpacing.xl),
-              const CategorySection(),
-              const SizedBox(height: AppSpacing.xxl),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
