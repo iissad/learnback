@@ -41,16 +41,21 @@ class MatchRepositoryImpl implements MatchRepository {
   Future<List<UserReview>> getUserReviews(String userId) async {
     try {
       final response = await _dio.get('users/$userId/userreviews');
-      final List data = response.data['data'] as List;
-      return data.map((e) {
-        final m = e as Map<String, dynamic>;
-        final reviewer = m['reviewerId'] as Map<String, dynamic>?;
+      final List<dynamic> data = response.data['data'];
+      return data.map((review) {
+        final reviewer = review['reviewerId'];
+        String reviewerName = 'Peer';
+        if (reviewer is Map) {
+          reviewerName = reviewer['name'] ?? 'Peer';
+        }
+
         return UserReview.fromJson({
-          'rating': m['rating'],
-          'review': m['review'],
-          'comment': m['comment'],
-          'reviewerName': reviewer?['name'],
-          'reviewerEmail': reviewer?['email'],
+          'id': review['_id'] ?? review['id'] ?? '',
+          'rating': (review['rating'] as num?)?.toInt() ?? 0,
+          'review': review['review'] ?? 'good',
+          'comment': review['comment'],
+          'reviewerName': reviewerName,
+          'createdAt': review['createdAt'],
         });
       }).toList();
     } on DioException catch (e) {

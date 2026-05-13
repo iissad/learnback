@@ -195,8 +195,9 @@ class MatchProfileScreen extends ConsumerWidget {
   Widget _buildRatingBreakdown(List<UserReview> reviews) {
     final counts = {5: 0, 4: 0, 3: 0, 2: 0, 1: 0};
     for (var r in reviews) {
-      if (counts.containsKey(r.rating)) {
-        counts[r.rating] = counts[r.rating]! + 1;
+      final ratingInt = r.rating.toInt();
+      if (counts.containsKey(ratingInt)) {
+        counts[ratingInt] = counts[ratingInt]! + 1;
       }
     }
 

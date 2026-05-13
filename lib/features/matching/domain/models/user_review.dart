@@ -6,12 +6,14 @@ part 'user_review.g.dart';
 @freezed
 abstract class UserReview with _$UserReview {
   const factory UserReview({
+    required String id,
     required int rating,
     required String review,
     String? comment,
     String? reviewerName,
     String? reviewerEmail,
     String? reviewerAvatar,
+    String? createdAt,
   }) = _UserReview;
 
   factory UserReview.fromJson(Map<String, dynamic> json) =>
