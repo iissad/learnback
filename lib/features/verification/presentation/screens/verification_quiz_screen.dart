@@ -233,7 +233,7 @@ class _OptionTile extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.blueLight.withOpacity(0.1)
+              ? AppColors.blueLight.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(

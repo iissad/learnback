@@ -33,9 +33,9 @@ class MatchingScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     PopularSkillsSection(),
-                    const SizedBox(height: AppSpacing.xl),
+                    SizedBox(height: AppSpacing.xl),
                     CategorySection(),
-                    const SizedBox(height: AppSpacing.xxl),
+                    SizedBox(height: AppSpacing.xxl),
                   ],
                 ),
               ),

@@ -15,7 +15,6 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SkillTest {
 
-// ignore: invalid_annotation_target
 @JsonKey(name: '_id') String get id; String get skillId; String get level; int get passingScore; List<TestQuestion> get questions;
 /// Create a copy of SkillTest
 /// with the given fields replaced by the non-null parameter values.
@@ -217,7 +216,6 @@ class _SkillTest implements SkillTest {
   const _SkillTest({@JsonKey(name: '_id') required this.id, required this.skillId, required this.level, required this.passingScore, required final  List<TestQuestion> questions}): _questions = questions;
   factory _SkillTest.fromJson(Map<String, dynamic> json) => _$SkillTestFromJson(json);
 
-// ignore: invalid_annotation_target
 @override@JsonKey(name: '_id') final  String id;
 @override final  String skillId;
 @override final  String level;
