@@ -63,7 +63,7 @@ class MatchProfileScreen extends ConsumerWidget {
             _buildProfileHeader(),
             const SizedBox(height: AppSpacing.xl),
             reviewsAsync.when(
-              data: (reviews) => _buildStatsRow(reviews),
+              data: (reviews) => _buildStatsRow(),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (e, _) => Center(child: Text('Error loading reviews')),
             ),
@@ -80,9 +80,35 @@ class MatchProfileScreen extends ConsumerWidget {
               error: (e, _) => const SizedBox.shrink(),
             ),
             const SizedBox(height: AppSpacing.xxl),
-            GradientButton(
-              label: 'Accept request',
-              onPressed: () => _handleAccept(context, ref),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => context.pop(),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: const BorderSide(color: AppColors.blue),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: AppTextStyles.labelButton.copyWith(
+                        color: AppColors.blue,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.md),
+                Expanded(
+                  flex: 2,
+                  child: GradientButton(
+                    label: 'Accept request',
+                    onPressed: () => _handleAccept(context, ref),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.xl),
           ],
@@ -127,30 +153,24 @@ class MatchProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsRow(List<UserReview> reviews) {
-    double avgRating = 0;
-    if (reviews.isNotEmpty) {
-      avgRating =
-          reviews.map((e) => e.rating).reduce((a, b) => a + b) / reviews.length;
-    }
-
+  Widget _buildStatsRow() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildStatCard(
-          '${avgRating.toStringAsFixed(2)}/5',
-          'Rating',
-          AppColors.blueLight,
+        Expanded(
+          child: _buildStatCard(
+            match.skillYouLearn, // Peer teaches what user learns
+            'Skill\nto teach',
+            AppColors.blueLight,
+          ),
         ),
-        _buildStatCard(
-          match.skillYouLearn, // Peer teaches what user learns
-          'Skill\nto teach',
-          AppColors.blueLight,
-        ),
-        _buildStatCard(
-          match.skillYouTeach, // Peer learns what user teaches
-          'Skill\nto learn',
-          AppColors.blueLight,
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: _buildStatCard(
+            match.skillYouTeach, // Peer learns what user teaches
+            'Skill\nto learn',
+            AppColors.blueLight,
+          ),
         ),
       ],
     );
@@ -201,6 +221,12 @@ class MatchProfileScreen extends ConsumerWidget {
       }
     }
 
+    double avgRating = 0;
+    if (reviews.isNotEmpty) {
+      avgRating =
+          reviews.map((e) => e.rating).reduce((a, b) => a + b) / reviews.length;
+    }
+
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -210,7 +236,19 @@ class MatchProfileScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Rating', style: AppTextStyles.headingSmall),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Rating', style: AppTextStyles.headingSmall),
+              Text(
+                '${avgRating.toStringAsFixed(1)}/5',
+                style: AppTextStyles.headingSmall.copyWith(
+                  color: AppColors.blueLight,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
           const SizedBox(height: AppSpacing.md),
           ...[5, 4, 3, 2, 1].map((stars) {
             final count = counts[stars] ?? 0;
