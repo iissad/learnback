@@ -30,6 +30,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final bioController = TextEditingController(text: currentBio ?? '');
     String selectedAvatar = currentAvatar;
     bool isPickerExpanded = false;
+    String? nameError;
+    String? bioError;
 
     showDialog(
       context: context,
@@ -154,8 +156,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       TextField(
                         controller: nameController,
                         style: const TextStyle(color: Colors.white),
+                        onChanged: (val) {
+                          if (nameError != null) {
+                            setDialogState(() => nameError = null);
+                          }
+                        },
                         decoration: InputDecoration(
                           labelText: 'Name',
+                          errorText: nameError,
+                          errorStyle: AppTextStyles.errorText,
                           labelStyle: const TextStyle(
                             color: AppColors.darkTextSecondary,
                           ),
@@ -177,8 +186,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         maxLines: null,
                         minLines: 1,
                         style: const TextStyle(color: Colors.white),
+                        onChanged: (val) {
+                          if (bioError != null) {
+                            setDialogState(() => bioError = null);
+                          }
+                        },
                         decoration: InputDecoration(
                           labelText: 'Bio',
+                          errorText: bioError,
+                          errorStyle: AppTextStyles.errorText,
                           labelStyle: const TextStyle(
                             color: AppColors.darkTextSecondary,
                           ),
@@ -217,7 +233,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     final newName = nameController.text.trim();
                     final newBio = bioController.text.trim();
 
-                    if (newName.isNotEmpty) {
+                    setDialogState(() {
+                      nameError = newName.isEmpty
+                          ? 'Name cannot be empty'
+                          : null;
+                      bioError = newBio.isEmpty ? 'Bio cannot be empty' : null;
+                    });
+
+                    if (newName.isNotEmpty && newBio.isNotEmpty) {
                       ref
                           .read(profileProvider.notifier)
                           .updateProfile(
@@ -225,8 +248,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             bio: newBio,
                             avatar: selectedAvatar,
                           );
+                      Navigator.pop(context);
                     }
-                    Navigator.pop(context);
                   },
                   child: const Text(
                     'Save',
